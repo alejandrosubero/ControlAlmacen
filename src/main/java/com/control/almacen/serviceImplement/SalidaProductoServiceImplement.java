@@ -79,66 +79,46 @@ public class SalidaProductoServiceImplement implements SalidaProductoService {
     @Override
     public boolean saveSalidaProducto(SalidaProducto salidaproducto) {
         logger.info("Start save out product");
-        try {
-            logger.info("recupero producto");
-            Producto producto =  productoService.findByCodigo(salidaproducto.getproducto().getCodigo());
-            Long candidateRest = producto.getCatidadActual() - salidaproducto.getproducto().getUltimaCantidadSalida();
-            producto.setCatidadActual(candidateRest);
-            producto.setUltimaCantidadSalida(salidaproducto.getproducto().getUltimaCantidadSalida());
-            producto.setFechaUltimaSalida(salidaproducto.getproducto().getFechaUltimaSalida());
-            logger.info("new salida producto actualiza");
-            salidaproducto.setproducto(producto);
-            salidaproductorepository.save(salidaproducto);
-            logger.info("actualiza producto");
-            productoService.saveOrUpdateProducto(producto);
-            return true;
-        } catch (DataAccessException e) {
-            logger.error(" ERROR : " + e);
-            return false;
+        boolean exito = false;
+        if (!salidaproducto.getCodigoProducto().isEmpty()) {
+            try {
+                logger.info("recupero producto");
+                Producto producto = productoService.findByCodigo(salidaproducto.getCodigoProducto());
+                if (null != producto.getCodigo()) {
+                    Long candidateRest = producto.getCatidadActual() - salidaproducto.getCantidadSalida();
+                    producto.setCatidadActual(candidateRest);
+                    producto.setUltimaCantidadSalida(salidaproducto.getCantidadSalida());
+                    producto.setFechaUltimaSalida(salidaproducto.getFechadesalida());
+                    salidaproductorepository.save(salidaproducto);
+                    productoService.saveProducto(producto);
+                    exito = true;
+                }
+            } catch (DataAccessException e) {
+                logger.error(" ERROR : " + e);
+                return exito;
+            }
         }
+        return exito;
     }
 
 
     @Override
     public boolean saveListaSalidaProducto(List<SalidaProducto> salidaproductos) {
         logger.info("Start save out product");
+        boolean exitos = false;
+        int cont = 0;
         try {
             logger.info("recupero producto");
-            for ( SalidaProducto salidaproducto : salidaproductos) {
-                Producto producto =  productoService.findByCodigo(salidaproducto.getproducto().getCodigo());
-                Long candidateRest = producto.getCatidadActual() - salidaproducto.getproducto().getUltimaCantidadSalida();
-                producto.setCatidadActual(candidateRest);
-                producto.setUltimaCantidadSalida(salidaproducto.getproducto().getUltimaCantidadSalida());
-                producto.setFechaUltimaSalida(salidaproducto.getproducto().getFechaUltimaSalida());
-                logger.info("new salida producto actualiza");
-                salidaproducto.setproducto(producto);
-                salidaproductorepository.save(salidaproducto);
-                logger.info("actualiza producto");
-                productoService.saveOrUpdateProducto(producto);
+            for (SalidaProducto salidaproducto : salidaproductos) {
+                if(this.saveSalidaProducto(salidaproducto)){ cont++; }
             }
-            return true;
+            if (cont == salidaproductos.size()){ exitos = true; }
+            return exitos;
         } catch (DataAccessException e) {
             logger.error(" ERROR : " + e);
-            return false;
+            e.printStackTrace();
+            return exitos;
         }
-    }
-
-
-
-    @Override
-    public boolean updateSalidaProducto(SalidaProducto salidaproducto) {
-        logger.info("Update Proyect");
-        boolean clave = false;
-        SalidaProducto empre = findById(salidaproducto.getId());
-        empre = salidaproducto;
-        try {
-            salidaproductorepository.save(empre);
-            clave = true;
-        } catch (DataAccessException e) {
-            logger.error(" ERROR : " + e);
-            clave = false;
-        }
-        return clave;
     }
 
 
@@ -146,23 +126,6 @@ public class SalidaProductoServiceImplement implements SalidaProductoService {
     public SalidaProducto findById(Long id) {
         return salidaproductorepository.findById(id).get();
     }
-
-
-    @Override
-    public boolean saveOrUpdateSalidaProducto(SalidaProducto salidaproducto) {
-        logger.info("Update Proyect");
-        boolean clave = false;
-        Optional<SalidaProducto> fileOptional2 = salidaproductorepository.findById(salidaproducto.getId());
-        if (fileOptional2.isPresent()) {
-            clave = this.updateSalidaProducto(salidaproducto);
-            logger.info(" is update");
-        } else {
-            clave = this.saveSalidaProducto(salidaproducto);
-            logger.info(" is save");
-        }
-        return clave;
-    }
-
 
     @Override
     public List<SalidaProducto> findByFechadesalidaContaining(Date fechadesalida) {
@@ -172,12 +135,11 @@ public class SalidaProductoServiceImplement implements SalidaProductoService {
         return listaSalidaProducto;
     }
 
-
     @Override
-    public List<SalidaProducto> findByRelacionProducto(Producto producto) {
+    public List<SalidaProducto> findByRelacionProducto(String codigoProducto) {
         List<SalidaProducto> listaSalidaProducto = new ArrayList<SalidaProducto>();
         for (SalidaProducto salidaproducto : this.getAllSalidaProducto()) {
-            if (salidaproducto.getproducto().equals(producto)) {
+            if (salidaproducto.getCodigoProducto().equals(codigoProducto)) {
                 listaSalidaProducto.add(salidaproducto);
             }
         }
@@ -185,10 +147,10 @@ public class SalidaProductoServiceImplement implements SalidaProductoService {
     }
 
     @Override
-    public List<SalidaProducto> findByRelacionUser(User user) {
+    public List<SalidaProducto> findByRelacionUser(String encargado) {
         List<SalidaProducto> listaSalidaProducto = new ArrayList<SalidaProducto>();
         for (SalidaProducto salidaproducto : this.getAllSalidaProducto()) {
-            if (salidaproducto.getusuario().equalsUser(user)) {
+            if (salidaproducto.getEncargado().equals(encargado)) {
                 listaSalidaProducto.add(salidaproducto);
             }
         }
@@ -199,7 +161,7 @@ public class SalidaProductoServiceImplement implements SalidaProductoService {
     public List<SalidaProducto> findByRelacionCliente(Cliente cliente) {
         List<SalidaProducto> listaSalidaProducto = new ArrayList<SalidaProducto>();
         for (SalidaProducto salidaproducto : this.getAllSalidaProducto()) {
-            if (salidaproducto.getcliente().equalsCliente(cliente)) {
+            if (salidaproducto.getCliente().equalsCliente(cliente)) {
                 listaSalidaProducto.add(salidaproducto);
             }
         }
@@ -226,3 +188,37 @@ public class SalidaProductoServiceImplement implements SalidaProductoService {
 
 
 }
+
+
+//    @Override
+//    public boolean updateSalidaProducto(SalidaProducto salidaproducto) {
+//        logger.info("Update Proyect");
+//        boolean clave = false;
+//        SalidaProducto empre = findById(salidaproducto.getId());
+//        empre = salidaproducto;
+//        try {
+//            salidaproductorepository.save(empre);
+//            clave = true;
+//        } catch (DataAccessException e) {
+//            logger.error(" ERROR : " + e);
+//            clave = false;
+//        }
+//        return clave;
+//    }
+
+
+//    @Override
+//    public boolean saveOrUpdateSalidaProducto(SalidaProducto salidaproducto) {
+//        logger.info("Update Proyect");
+//        boolean clave = false;
+//        Optional<SalidaProducto> fileOptional2 = salidaproductorepository.findById(salidaproducto.getId());
+//        if (fileOptional2.isPresent()) {
+//            clave = this.updateSalidaProducto(salidaproducto);
+//            logger.info(" is update");
+//        } else {
+//            clave = this.saveSalidaProducto(salidaproducto);
+//            logger.info(" is save");
+//        }
+//        return clave;
+//    }
+

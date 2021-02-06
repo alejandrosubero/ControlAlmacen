@@ -158,7 +158,7 @@ public class EdicionServiceImplement implements EdicionService {
     public List<Edicion> findByRelacionUser(User user) {
         List<Edicion> listaEdicion = new ArrayList<Edicion>();
         for (Edicion edicion : this.getAllEdicion()) {
-            if (edicion.getuser().equalsUser(user)) {
+            if (edicion.getuser().equals(user)) {
                 listaEdicion.add(edicion);
             }
         }

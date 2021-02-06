@@ -222,8 +222,6 @@ public class ProductoServiceImplement implements ProductoService {
     @Override
     public boolean saveProducto(Producto producto) {
         logger.info("Save Proyect");
-
-
         try {
             productorepository.save(producto);
             return true;

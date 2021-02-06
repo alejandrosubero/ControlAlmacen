@@ -34,6 +34,9 @@ public class User implements Serializable {
     @Column(name = "id", updatable = true, nullable = false, length = 25)
     private Long id;
 
+    @Column(name = "codigoUser", updatable = true, nullable = true, length = 200)
+    private String codigoUser;
+
 
     @Column(name = "nombre", updatable = true, nullable = true, length = 200)
     private String nombre;
@@ -100,18 +103,39 @@ public class User implements Serializable {
         this.rol = rol;
     }
 
+    public String getCodigoUser() {
+        return codigoUser;
+    }
 
-    public boolean equalsUser(Object o) {
+    public void setCodigoUser(String codigoUser) {
+        this.codigoUser = codigoUser;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return Objects.equals(id, user.id) ||
-                Objects.equals(nombre, user.nombre) ||
-                Objects.equals(passwork, user.passwork) ||
-                Objects.equals(dni, user.dni) ||
-                Objects.equals(activo, user.activo) ||
-                Objects.equals(rol, user.rol);
+        return Objects.equals(id, user.id) && Objects.equals(codigoUser, user.codigoUser) && Objects.equals(nombre, user.nombre) && Objects.equals(passwork, user.passwork) && Objects.equals(dni, user.dni) && Objects.equals(activo, user.activo) && Objects.equals(rol, user.rol);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, codigoUser, nombre, passwork, dni, activo, rol);
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", codigoUser='" + codigoUser + '\'' +
+                ", nombre='" + nombre + '\'' +
+                ", passwork='" + passwork + '\'' +
+                ", dni='" + dni + '\'' +
+                ", activo=" + activo +
+                ", rol='" + rol + '\'' +
+                '}';
     }
 }
  /*

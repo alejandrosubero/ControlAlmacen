@@ -35,6 +35,7 @@ import java.util.ArrayList;
           entity.setDni(pojo.getDni());
           entity.setActivo(pojo.getActivo());
           entity.setRol(pojo.getRol());
+          entity.setCodigoUser(pojo.getCodigoUser());
             return entity;
         }
 
@@ -47,7 +48,7 @@ import java.util.ArrayList;
         pojo.setDni(entity.getDni());
         pojo.setActivo(entity.getActivo());
         pojo.setRol(entity.getRol());
-
+        pojo.setCodigoUser(entity.getCodigoUser());
             return pojo;
         }
 

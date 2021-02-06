@@ -11,61 +11,60 @@ Create on Sat Jan 30 15:24:38 ART 2021
 */
 
 
-package com.control.almacen.validation ;
+package com.control.almacen.validation;
 
-import java.util.Optional;
-import java.util.ArrayList;
-import java.util.List;import java.util.Date;
 
-import com.control.almacen.entitys.Entrada;import java.util.regex.Pattern;
+
+import java.util.regex.Pattern;
+
 import org.springframework.stereotype.Service;
-import com.control.almacen.pojo.EntradaPojo;import com.control.almacen.pojo.EntradaPojo;import com.control.almacen.entitys.Producto;
-import com.control.almacen.pojo.ProductoPojo;
-import com.control.almacen.entitys.User;
-import com.control.almacen.pojo.UserPojo;
+import com.control.almacen.pojo.EntradaPojo;
 
 
 
-    @Service
-    public class EntradaValidation {
+@Service
+public class EntradaValidation {
 
-        public EntradaPojo valida(EntradaPojo entrada) {
+    public EntradaPojo valida(EntradaPojo entrada) {
         EntradaPojo pojo = null;
         try {
-             if (entrada != null) {
-              if (
-        entrada.getId() != null &&
-        entrada.getNota() != null &&
-        entrada.getCantidadingresada() != null &&
-        entrada.getFechaingreso() != null        ) {
-        pojo = entrada;
-         }
-        }
+            if (entrada != null) {
+                if (entrada.getId() != null &&
+                        entrada.getNota() != null &&
+                        entrada.getCantidadIngresada()!= null &&
+                        entrada.getFechaIngreso() != null) {
+                    pojo = entrada;
+                }
+            }
             return pojo;
         } catch (Exception e) {
             e.printStackTrace();
             return pojo;
         }
     }
-// remplace de name of variable for you proyecte
-    public Long valida_id( String poder) {
-             Long id_Delete = 0l;        try {
-          if (poder != null) {
-          if (poder.length() > 0 && !Pattern.matches("[a-zA-Z]+", poder)) {
-         id_Delete = Long.parseLong(poder);            }
-        }
-            return id_Delete;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return id_Delete;
-        }
-    }
-    public <T> Object validation(T t) {
-         T elemento = null;
+
+    // remplace de name of variable for you proyecte
+    public Long valida_id(String poder) {
+        Long id_Delete = 0l;
         try {
-        if (t != null) {
-            elemento = t;
+            if (poder != null) {
+                if (poder.length() > 0 && !Pattern.matches("[a-zA-Z]+", poder)) {
+                    id_Delete = Long.parseLong(poder);
+                }
+            }
+            return id_Delete;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return id_Delete;
         }
+    }
+
+    public <T> Object validation(T t) {
+        T elemento = null;
+        try {
+            if (t != null) {
+                elemento = t;
+            }
             return elemento;
         } catch (Exception e) {
             e.printStackTrace();
@@ -73,6 +72,8 @@ import com.control.almacen.pojo.UserPojo;
         }
     }
 }
+
+
  /*
  Copyright (C) 2008 Google Inc.
 * Licensed to the Apache Software Foundation (ASF) under one or more

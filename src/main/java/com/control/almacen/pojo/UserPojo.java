@@ -28,6 +28,8 @@ public class UserPojo implements Serializable {
 
     private Long id;
 
+    private String codigoUser;
+
     private String nombre;
 
     private String passwork;
@@ -37,7 +39,6 @@ public class UserPojo implements Serializable {
     private Boolean activo;
 
     private String rol;
-
 
 
     public Long getId() {
@@ -88,18 +89,27 @@ public class UserPojo implements Serializable {
         this.rol = rol;
     }
 
-    public boolean equalsUserPojo(Object o) {
+    public String getCodigoUser() {
+        return codigoUser;
+    }
+
+    public void setCodigoUser(String codigoUser) {
+        this.codigoUser = codigoUser;
+    }
+
+    @Override
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        UserPojo userpojo = (UserPojo) o;
-        return Objects.equals(id, userpojo.id) ||
-                Objects.equals(nombre, userpojo.nombre) ||
-                Objects.equals(passwork, userpojo.passwork) ||
-                Objects.equals(dni, userpojo.dni) ||
-                Objects.equals(activo, userpojo.activo) ||
-                Objects.equals(rol, userpojo.rol);
-
+        UserPojo userPojo = (UserPojo) o;
+        return Objects.equals(id, userPojo.id) && Objects.equals(codigoUser, userPojo.codigoUser) && Objects.equals(nombre, userPojo.nombre) && Objects.equals(passwork, userPojo.passwork) && Objects.equals(dni, userPojo.dni) && Objects.equals(activo, userPojo.activo) && Objects.equals(rol, userPojo.rol);
     }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, codigoUser, nombre, passwork, dni, activo, rol);
+    }
+
 }
  /*
  Copyright (C) 2008 Google Inc.

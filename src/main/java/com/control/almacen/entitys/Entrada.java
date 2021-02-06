@@ -37,23 +37,46 @@ public class Entrada implements Serializable {
     @Column(name = "id", updatable = true, nullable = false, length = 25)
     private Long id;
 
-    @Column(name = "nota", updatable = true, nullable = true, length = 200)
-    private String nota;
-
     @Column(name = "cantidad_Ingresada", updatable = true, nullable = true, length = 200)
     private Long cantidadIngresada;
 
-    @Column(name = "fechaIngreso", updatable = true, nullable = true, length = 200)
-    private String fechaIngreso;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Producto producto;
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private User encargado;
+    @Column(name = "fecha_Ingreso", updatable = true, nullable = true)
+    private Date fechaIngreso;
 
 
-    public Entrada() {}
+    @Column(name = "ticket", updatable = true, nullable = true, length = 200)
+    private String ticket;
+
+    @Column(name = "idProductoEnBase", updatable = true, nullable = true, length = 2000)
+    private Long idProductoEnBase;
+
+
+    @Column(name = "codigo_Producto", updatable = true, nullable = true, length = 200)
+    private String codigoProducto;
+
+
+    @Column(name = "nombre_Producto", updatable = true, nullable = true, length = 200)
+    private String nombreProducto;
+
+
+    @Column(name = "catidadActual", updatable = true, nullable = true)
+    private Long catidadActual;
+
+
+    @Column(name = "codigoUser", updatable = true, nullable = true, length = 200)
+    private String encargado;
+
+    @Column(name = "nota", updatable = true, nullable = true, length = 200)
+    private String nota;
+
+
+    public Entrada() {
+    }
+
+    public static long getSerialVersionUID() {
+        return serialVersionUID;
+    }
 
     public Long getId() {
         return id;
@@ -61,6 +84,30 @@ public class Entrada implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public Long getCantidadIngresada() {
+        return cantidadIngresada;
+    }
+
+    public void setCantidadIngresada(Long cantidadIngresada) {
+        this.cantidadIngresada = cantidadIngresada;
+    }
+
+    public Date getFechaIngreso() {
+        return fechaIngreso;
+    }
+
+    public void setFechaIngreso(Date fechaIngreso) {
+        this.fechaIngreso = fechaIngreso;
+    }
+
+    public String getEncargado() {
+        return encargado;
+    }
+
+    public void setEncargado(String encargado) {
+        this.encargado = encargado;
     }
 
     public String getNota() {
@@ -71,47 +118,75 @@ public class Entrada implements Serializable {
         this.nota = nota;
     }
 
-    public Long getCantidadingresada() {
-        return cantidadIngresada;
+    public String getTicket() {
+        return ticket;
     }
 
-    public void setCantidadingresada(Long cantidadIngresada) {
-        this.cantidadIngresada = cantidadIngresada;
+    public void setTicket(String ticket) {
+        this.ticket = ticket;
     }
 
-    public String getFechaingreso() {
-        return fechaIngreso;
+    public Long getIdProductoEnBase() {
+        return idProductoEnBase;
     }
 
-    public void setFechaingreso(String fechaIngreso) {
-        this.fechaIngreso = fechaIngreso;
+    public void setIdProductoEnBase(Long idProductoEnBase) {
+        this.idProductoEnBase = idProductoEnBase;
     }
 
-    public Producto getproducto() {
-        return producto;
+    public String getCodigoProducto() {
+        return codigoProducto;
     }
 
-    public void setproducto(Producto producto) {
-        this.producto = producto;
+    public void setCodigoProducto(String codigoProducto) {
+        this.codigoProducto = codigoProducto;
     }
 
-    public User getencargado() {
-        return encargado;
+    public String getNombreProducto() {
+        return nombreProducto;
     }
 
-    public void setencargado(User encargado) {
-        this.encargado = encargado;
+    public void setNombreProducto(String nombreProducto) {
+        this.nombreProducto = nombreProducto;
     }
 
-    public boolean equalsEntrada(Object o) {
+    public Long getCatidadActual() {
+        return catidadActual;
+    }
+
+    public void setCatidadActual(Long catidadActual) {
+        this.catidadActual = catidadActual;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Entrada entrada = (Entrada) o;
-        return Objects.equals(id, entrada.id) ||
-                Objects.equals(nota, entrada.nota) ||
-                Objects.equals(cantidadIngresada, entrada.cantidadIngresada) ||
-                Objects.equals(fechaIngreso, entrada.fechaIngreso);
+        return Objects.equals(id, entrada.id) && Objects.equals(cantidadIngresada, entrada.cantidadIngresada) && Objects.equals(fechaIngreso, entrada.fechaIngreso) && Objects.equals(encargado, entrada.encargado) && Objects.equals(nota, entrada.nota) && Objects.equals(ticket, entrada.ticket) && Objects.equals(idProductoEnBase, entrada.idProductoEnBase) && Objects.equals(codigoProducto, entrada.codigoProducto) && Objects.equals(nombreProducto, entrada.nombreProducto) && Objects.equals(catidadActual, entrada.catidadActual);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, cantidadIngresada, fechaIngreso, encargado, nota, ticket, idProductoEnBase, codigoProducto, nombreProducto, catidadActual);
+    }
+
+
+    @Override
+    public String toString() {
+        return "Entrada{" +
+                "id=" + id +
+                ", cantidadIngresada=" + cantidadIngresada +
+                ", fechaIngreso=" + fechaIngreso +
+                ", encargado=" + encargado +
+                ", nota='" + nota + '\'' +
+                ", ticket='" + ticket + '\'' +
+                ", idProductoEnBase=" + idProductoEnBase +
+                ", codigoProducto='" + codigoProducto + '\'' +
+                ", nombreProducto='" + nombreProducto + '\'' +
+                ", catidadActual=" + catidadActual +
+                '}';
     }
 }
  /*

@@ -37,31 +37,39 @@ public class EntradaMapper {
     @Autowired
     private UserMapper usermapper;
 
+
+
     public Entrada PojoToEntity(EntradaPojo pojo) {
         Entrada entity = new Entrada();
+
         entity.setId(pojo.getId());
+        entity.setCantidadIngresada(pojo.getCantidadIngresada());
+        entity.setFechaIngreso(pojo.getFechaIngreso());
+        entity.setTicket(pojo.getTicket());
+        entity.setIdProductoEnBase(pojo.getIdProductoEnBase());
+        entity.setCodigoProducto(pojo.getCodigoProducto());
+        entity.setNombreProducto(pojo.getNombreProducto());
+        entity.setCatidadActual(pojo.getCatidadActual());
+        entity.setEncargado(pojo.getEncargado());
         entity.setNota(pojo.getNota());
-        entity.setCantidadingresada(pojo.getCantidadingresada());
-        entity.setFechaingreso(pojo.getFechaingreso());
-        List<Producto> listproducto = new ArrayList<Producto>();
-        List<User> listencargado = new ArrayList<User>();
-        entity.setproducto(productomapper.PojoToEntity(pojo.getproducto()));
-        entity.setencargado(usermapper.PojoToEntity(pojo.getencargado()));
+
         return entity;
     }
 
 
     public EntradaPojo entityToPojo(Entrada entity) {
         EntradaPojo pojo = new EntradaPojo();
-        List<ProductoPojo> listproducto = new ArrayList<ProductoPojo>();
-        List<UserPojo> listencargado = new ArrayList<UserPojo>();
-        pojo.setId(entity.getId());
-        pojo.setNota(entity.getNota());
-        pojo.setCantidadingresada(entity.getCantidadingresada());
-        pojo.setFechaingreso(entity.getFechaingreso());
 
-        pojo.setproducto(productomapper.entityToPojo(entity.getproducto()));
-        pojo.setencargado(usermapper.entityToPojo(entity.getencargado()));
+        pojo.setId(entity.getId());
+        pojo.setCantidadIngresada(entity.getCantidadIngresada());
+        pojo.setFechaIngreso(entity.getFechaIngreso());
+        pojo.setTicket(entity.getTicket());
+        pojo.setIdProductoEnBase(entity.getIdProductoEnBase());
+        pojo.setCodigoProducto(entity.getCodigoProducto());
+        pojo.setNombreProducto(entity.getNombreProducto());
+        pojo.setCatidadActual(entity.getCatidadActual());
+        pojo.setEncargado(entity.getEncargado());
+        pojo.setNota(entity.getNota());
         return pojo;
     }
 

@@ -72,9 +72,9 @@ public class Producto implements Serializable {
     @Column(name = "clasificacion", updatable = true, nullable = true, length = 500)
     private String clasificacion;
 
-
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = false)
     private List<AlmacenajeArea> areaAlmacenajeSystem = new ArrayList<>();
+
 
     @Column(name = "fecha_Ultimo_Ingreso", updatable = true, nullable = true)
     private Date fechaUltimoIngreso;

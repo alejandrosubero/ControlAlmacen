@@ -28,27 +28,16 @@ import com.control.almacen.entitys.Cliente;
 
 public interface SalidaProductoService {
 
-    public SalidaProducto findByFechadesalida(Date fechadesalida);
-
-    public List<SalidaProducto> findByFechadesalidaContaining(Date fechadesalida);
-
     public SalidaProducto findById(Long id);
-
-    public boolean saveListaSalidaProducto(List<SalidaProducto> salidaproductos);
-
-    public boolean saveSalidaProducto(SalidaProducto salidaproducto);
-
     public List<SalidaProducto> getAllSalidaProducto();
-
-    public boolean updateSalidaProducto(SalidaProducto salidaproducto);
-
-    public boolean saveOrUpdateSalidaProducto(SalidaProducto salidaproducto);
-
-    public List<SalidaProducto> findByRelacionProducto(Producto producto);
-
-    public List<SalidaProducto> findByRelacionUser(User user);
-
+    public boolean saveSalidaProducto(SalidaProducto salidaproducto);
+    public boolean saveListaSalidaProducto(List<SalidaProducto> salidaproductos);
+    public SalidaProducto findByFechadesalida(Date fechadesalida);
+    public List<SalidaProducto> findByFechadesalidaContaining(Date fechadesalida);
+    public List<SalidaProducto> findByRelacionProducto(String codigoProducto);
+    public List<SalidaProducto> findByRelacionUser(String encargado);
     public List<SalidaProducto> findByRelacionCliente(Cliente cliente);
+
 }
  /*
  Copyright (C) 2008 Google Inc.

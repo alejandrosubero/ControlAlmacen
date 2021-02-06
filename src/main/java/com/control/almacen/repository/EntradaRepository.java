@@ -26,8 +26,8 @@ public interface EntradaRepository extends CrudRepository< Entrada, Long> {
 		public List<Entrada> findByNotaContaining(String nota);
 		public Optional<Entrada> findByCantidadIngresada(Long cantidadIngresada);
 		public List<Entrada> findByCantidadIngresadaContaining(Long cantidadIngresada);
-		public Optional<Entrada> findByFechaIngreso(String fechaIngreso);
-		public List<Entrada> findByFechaIngresoContaining(String fechaIngreso);
+		public Optional<Entrada> findByFechaIngreso(Date fechaIngreso);
+		public List<Entrada> findByFechaIngresoContaining(Date fechaIngreso);
 
 }
  /*

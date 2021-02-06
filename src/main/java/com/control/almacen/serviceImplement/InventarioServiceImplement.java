@@ -173,7 +173,7 @@ public class InventarioServiceImplement implements InventarioService {
         List<Inventario> listaInventario = new ArrayList<Inventario>();
         for (Inventario inventario : this.getAllInventario()) {
             for (Entrada entradax : inventario.getentrada()) {
-                if (entradax.equalsEntrada(entrada)) {
+                if (entradax.equals(entrada)) {
                     listaInventario.add(inventario);
                 }
             }
@@ -189,7 +189,7 @@ public class InventarioServiceImplement implements InventarioService {
         List<Inventario> listaInventario = new ArrayList<Inventario>();
         for (Inventario inventario : this.getAllInventario()) {
             for (SalidaProducto salidasx : inventario.getsalidas()) {
-                if (salidasx.equalsSalidaProducto(salidas)) {
+                if (salidasx.equals(salidas)) {
                     listaInventario.add(inventario);
                 }
             }

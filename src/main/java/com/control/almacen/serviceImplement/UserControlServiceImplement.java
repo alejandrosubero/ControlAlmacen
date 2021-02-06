@@ -177,7 +177,7 @@ public class UserControlServiceImplement implements UserControlService {
     public List<UserControl> findByRelacionUser(User user) {
         List<UserControl> listaUserControl = new ArrayList<UserControl>();
         for (UserControl usercontrol : this.getAllUserControl()) {
-            if (usercontrol.getuser().equalsUser(user)) {
+            if (usercontrol.getuser().equals(user)) {
                 listaUserControl.add(usercontrol);
             }
         }

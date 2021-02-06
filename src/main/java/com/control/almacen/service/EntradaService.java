@@ -24,37 +24,29 @@ import com.control.almacen.entitys.Entrada;
 import com.control.almacen.entitys.Producto;
 import com.control.almacen.entitys.User;
 import com.control.almacen.pojo.EntradaPojo;
+import com.control.almacen.pojo.ProductoIngreso;
 
 
 public interface EntradaService {
 
-    public Entrada findByNota(String nota);
-
-    public Entrada findByCantidadIngresada(Long cantidadIngresada);
-
-    public Entrada findByFechaIngreso(String fechaIngreso);
-
-    public List<Entrada> findByNotaContaining(String nota);
-
-    public List<Entrada> findByCantidadIngresadaContaining(Long cantidadIngresada);
-
-    public List<Entrada> findByFechaIngresoContaining(String fechaIngreso);
-
     public Entrada findById(Long id);
-
-    public boolean saveListEntrada(List<Entrada> entradas);
-
-    public boolean saveEntrada(Entrada entrada);
-
     public List<Entrada> getAllEntrada();
+    public boolean saveListEntrada(List<Entrada> entradas);
+    public boolean saveEntrada(Entrada entrada);
+    public List<Entrada> findByRelacionProducto(String codigoProducto);
+    public Entrada findByCantidadIngresada(Long cantidadIngresada);
+    public List<Entrada> findByCantidadIngresadaContaining(Long cantidadIngresada);
+    public Entrada findByFechaIngreso(Date fechaIngreso);
+    public List<Entrada> findByFechaIngresoContaining(Date fechaIngreso);
+    public Entrada findByNota(String nota);
+    public List<Entrada> findByNotaContaining(String nota);
+    public List<Entrada> findByRelacionUser(String encargado);
 
-    public boolean updateEntrada(Entrada entrada);
+    public boolean saveListEntradaProductoIngreso(List<ProductoIngreso> entradas);
+    public boolean saveEntradaProductoIngreso(ProductoIngreso entrada);
 
-    public boolean saveOrUpdateEntrada(Entrada entrada);
 
-    public List<Entrada> findByRelacionProducto(Producto producto);
 
-    public List<Entrada> findByRelacionUser(User user);
 }
  /*
  Copyright (C) 2008 Google Inc.

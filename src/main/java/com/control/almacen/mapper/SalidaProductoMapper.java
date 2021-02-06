@@ -33,40 +33,57 @@ import java.util.ArrayList;
 @Component
 public class SalidaProductoMapper {
 
-    @Autowired
-    private ProductoMapper productomapper;
+//    private Long id;
+//    private Date fechadesalida;
+//    private Long cantidadSalida;
+//    private String ticket;
+//    private Long idProductoEnBase;
+//    private String codigoProducto;
+//    private String nombreProducto;
+//    private Long catidadActual;
 
-    @Autowired
-    private UserMapper usermapper;
+//    private String encargado;
+//    private String nota;
+//    private Cliente cliente;
+
 
     @Autowired
     private ClienteMapper clientemapper;
 
     public SalidaProducto PojoToEntity(SalidaProductoPojo pojo) {
         SalidaProducto entity = new SalidaProducto();
+
         entity.setId(pojo.getId());
         entity.setFechadesalida(pojo.getFechadesalida());
-        List<Producto> listproducto = new ArrayList<Producto>();
-        List<User> listusuario = new ArrayList<User>();
-        List<Cliente> listcliente = new ArrayList<Cliente>();
-        entity.setproducto(productomapper.PojoToEntity(pojo.getproducto()));
-        entity.setusuario(usermapper.PojoToEntity(pojo.getusuario()));
-        entity.setcliente(clientemapper.PojoToEntity(pojo.getcliente()));
+        entity.setCantidadSalida(pojo.getCantidadSalida());
+        entity.setTicket(pojo.getTicket());
+        entity.setIdProductoEnBase(pojo.getIdProductoEnBase());
+        entity.setCodigoProducto(pojo.getCodigoProducto());
+        entity.setNombreProducto(pojo.getNombreProducto());
+        entity.setCatidadActual(pojo.getCatidadActual());
+        entity.setEncargado(pojo.getEncargado());
+        entity.setNota(pojo.getNota());
+        entity.setCliente(pojo.getCliente());
+
         return entity;
     }
 
 
     public SalidaProductoPojo entityToPojo(SalidaProducto entity) {
         SalidaProductoPojo pojo = new SalidaProductoPojo();
-        List<ProductoPojo> listproducto = new ArrayList<ProductoPojo>();
-        List<UserPojo> listusuario = new ArrayList<UserPojo>();
-        List<ClientePojo> listcliente = new ArrayList<ClientePojo>();
+
         pojo.setId(entity.getId());
         pojo.setFechadesalida(entity.getFechadesalida());
+        pojo.setCantidadSalida(entity.getCantidadSalida());
+        pojo.setTicket(entity.getTicket());
+        pojo.setIdProductoEnBase(entity.getIdProductoEnBase());
+        pojo.setCodigoProducto(entity.getCodigoProducto());
+        pojo.setNombreProducto(entity.getNombreProducto());
+        pojo.setCatidadActual(entity.getCatidadActual());
+        pojo.setEncargado(entity.getEncargado());
+        pojo.setNota(entity.getNota());
+        pojo.setCliente(entity.getCliente());
 
-        pojo.setproducto(productomapper.entityToPojo(entity.getproducto()));
-        pojo.setusuario(usermapper.entityToPojo(entity.getusuario()));
-        pojo.setcliente(clientemapper.entityToPojo(entity.getcliente()));
         return pojo;
     }
 

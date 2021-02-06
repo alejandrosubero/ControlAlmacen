@@ -121,7 +121,9 @@ public class SalidaProductoController {
 
     @PostMapping("/save")
     private Boolean saveSalidaProducto(@RequestBody SalidaProductoPojo salidaproducto) {
-        return salidaproductoService.saveSalidaProducto(salidaproductoMapper.PojoToEntity(salidaproductoValidationService.valida(salidaproducto)));
+        boolean exito = false;
+        SalidaProducto entity =  salidaproductoMapper.PojoToEntity(salidaproductoValidationService.valida(salidaproducto));
+        return  exito = entity != null? salidaproductoService.saveSalidaProducto(entity) : false;
     }
 
     @PostMapping("/saveList")
@@ -134,29 +136,16 @@ public class SalidaProductoController {
     }
 
 
-    @PostMapping("/Update")
-    private Long UpdateSalidaProducto(@RequestBody SalidaProductoPojo salidaproducto) {
-        salidaproductoService.updateSalidaProducto(salidaproductoMapper.PojoToEntity(salidaproductoValidationService.valida(salidaproducto)));
-        return salidaproducto.getId();
-    }
-
-
-    @PostMapping("/saveOrUpdate")
-    private boolean saveOrUpdateSalidaProducto(@RequestBody SalidaProductoPojo salidaproducto) {
-        return salidaproductoService.saveOrUpdateSalidaProducto(salidaproductoMapper.PojoToEntity(salidaproductoValidationService.valida(salidaproducto)));
-    }
-
-
     @PostMapping("/findproducto")
-    private ResponseEntity<EntityRespone> findRelacionProducto(@RequestBody ProductoPojo producto) {
-        EntityRespone entityRespone = mapperEntityRespone.setEntityT(salidaproductoService.findByRelacionProducto(productoMapper.PojoToEntity(productoValidationService.valida(producto))));
+    private ResponseEntity<EntityRespone> findRelacionProducto(@RequestBody String codigoProducto) {
+        EntityRespone entityRespone = mapperEntityRespone.setEntityT(salidaproductoService.findByRelacionProducto((String) salidaproductoValidationService.validation(codigoProducto)));
         return new ResponseEntity<EntityRespone>(entityRespone, HttpStatus.OK);
     }
 
 
     @PostMapping("/findusuario")
-    private ResponseEntity<EntityRespone> findRelacionUser(@RequestBody UserPojo user) {
-        EntityRespone entityRespone = mapperEntityRespone.setEntityT(salidaproductoService.findByRelacionUser(userMapper.PojoToEntity(userValidationService.valida(user))));
+    private ResponseEntity<EntityRespone> findRelacionUser(@RequestBody String encargado) {
+        EntityRespone entityRespone = mapperEntityRespone.setEntityT(salidaproductoService.findByRelacionUser((String) salidaproductoValidationService.validation(encargado)));
         return new ResponseEntity<EntityRespone>(entityRespone, HttpStatus.OK);
     }
 

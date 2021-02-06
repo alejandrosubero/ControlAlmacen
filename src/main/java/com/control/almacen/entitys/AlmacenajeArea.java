@@ -49,12 +49,15 @@ public class AlmacenajeArea implements Serializable {
     private String subseccion;
 
 
+    @Column(name = "activo", updatable = true, nullable = true, length = 200)
+    private Boolean activo;
+
+
     @Column(name = "nota", updatable = true, nullable = true, length = 200)
     private String nota;
 
 
-    @Column(name = "activo", updatable = true, nullable = true, length = 200)
-    private Boolean activo;
+
 
 
     public AlmacenajeArea() { }
