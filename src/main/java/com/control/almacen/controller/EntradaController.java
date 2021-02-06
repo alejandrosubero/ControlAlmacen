@@ -91,17 +91,17 @@ public class EntradaController {
     }
 
 
-    @PostMapping("/newIngresoList")
-    private Boolean newIngresoList(@RequestBody List<ProductoIngreso> productoIngresoList) {
-        List<ProductoIngreso> entradasProductoIngresoList = new ArrayList<ProductoIngreso>();
-
-//        for (EntradaPojo entrada:entradasListas) {
-//            entradas.add(entradaMapper.PojoToEntity(entradaValidationService.valida(entrada)));
-//        }
-//        return entradaService.saveListEntrada(entradas);
-
-        return null;
-    }
+//    @PostMapping("/newIngresoList")
+//    private Boolean newIngresoList(@RequestBody List<ProductoIngreso> productoIngresoList) {
+//        List<ProductoIngreso> entradasProductoIngresoList = new ArrayList<ProductoIngreso>();
+//
+////        for (EntradaPojo entrada:entradasListas) {
+////            entradas.add(entradaMapper.PojoToEntity(entradaValidationService.valida(entrada)));
+////        }
+////        return entradaService.saveListEntrada(entradas);
+//
+//        return null;
+//    }
 
 
 //    @PostMapping("/findproducto")

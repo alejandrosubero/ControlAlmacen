@@ -14,6 +14,12 @@ Create on Sat Jan 30 15:24:05 ART 2021
 
 package com.control.almacen.serviceImplement;
 
+import com.control.almacen.entitys.Entrada;
+import com.control.almacen.entitys.ListadoProducto;
+import com.control.almacen.repository.EntradaRepository;
+import com.control.almacen.repository.ListadoProductoRepository;
+import com.control.almacen.repository.ReconsiliacionProductosRepository;
+import com.control.almacen.service.ListadoProductoService;
 import com.control.almacen.service.ProductoService;
 import com.control.almacen.repository.ProductoRepository;
 
@@ -22,6 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 
+import com.control.almacen.service.ReconsiliacionProductosService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.criterion.CriteriaQuery;
@@ -43,10 +50,71 @@ public class ProductoServiceImplement implements ProductoService {
     private ProductoRepository productorepository;
 
 
+    @Autowired
+    private ReconsiliacionProductosService reconsiliacionProductosService;
+
+    @Autowired
+    private ListadoProductoService listadoProducto;
+
+
+    @Autowired
+    private ReconsiliacionProductosRepository reconsiliacionRepository;
+
+    @Autowired
+    private ListadoProductoRepository listadoProductoRepository;
+
+    @Autowired
+    private EntradaRepository entradaRepository;
+
+
     @Override
     public List<Producto> search(String search) {
         return productorepository.finBySearch(search);
     }
+
+
+
+    @Override
+    public boolean saveProducto(Producto producto) {
+        logger.info("Save Proyect");
+        try {
+            Optional<Producto> prod = productorepository.findByCodigo(producto.getCodigo());
+            if (!prod.isPresent()){
+                producto.setCantidadInicial(producto.getUltimaCantidadIngesada());
+                producto.setCatidadActual(producto.getUltimaCantidadIngesada());
+                productorepository.save(producto);
+
+                ListadoProducto igresoToListadoProducto = new ListadoProducto();
+                igresoToListadoProducto.setNombre(producto.getNombre());
+                igresoToListadoProducto.setCodigo(producto.getCodigo());
+                igresoToListadoProducto.setDescripcion(producto.getDescription());
+                igresoToListadoProducto.setClasificacion(producto.getClasificacion());
+
+                listadoProducto.saveListadoProducto(igresoToListadoProducto);
+
+            }else{
+                Producto productoEntity = new Producto();
+                productoEntity = prod.get();
+                Long valor = productoEntity.getCatidadActual() + producto.getUltimaCantidadIngesada();
+                producto.setCatidadActual(valor);
+                productorepository.save(producto);
+                ********
+            }
+
+//            if(!prod.getCodigo().isEmpty()){
+//
+//            }
+
+            return true;
+        } catch (DataAccessException e) {
+            logger.error(" ERROR : " + e);
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+
 
 
     @Override
@@ -219,17 +287,25 @@ public class ProductoServiceImplement implements ProductoService {
     }
 
 
-    @Override
-    public boolean saveProducto(Producto producto) {
+
+
+
+
+
+    public boolean saveProductox(Producto producto) {
         logger.info("Save Proyect");
         try {
             productorepository.save(producto);
             return true;
         } catch (DataAccessException e) {
             logger.error(" ERROR : " + e);
+            e.printStackTrace();
             return false;
         }
     }
+
+
+
 
 
     @Override

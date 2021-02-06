@@ -23,10 +23,13 @@ import org.springframework.data.jpa.repository.Temporal;
 import org.springframework.data.repository.CrudRepository;
 import com.control.almacen.entitys.Producto;
 import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface ProductoRepository extends CrudRepository< Producto, Long> {
  
 		public Optional<Producto> findByCodigo(String codigo);
+
 		public List<Producto> findByCodigoContaining(String codigo);
 		public Optional<Producto> findByNombre(String nombre);
 		public List<Producto> findByNombreContaining(String nombre);

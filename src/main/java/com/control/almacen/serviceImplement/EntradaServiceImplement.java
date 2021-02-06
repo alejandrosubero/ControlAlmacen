@@ -20,6 +20,7 @@ import com.control.almacen.mapper.ProductoMapper;
 import com.control.almacen.pojo.AlmacenajeAreaPojo;
 import com.control.almacen.pojo.ProductoIngreso;
 import com.control.almacen.repository.ListadoProductoRepository;
+import com.control.almacen.repository.ProductoRepository;
 import com.control.almacen.repository.ReconsiliacionProductosRepository;
 import com.control.almacen.service.EntradaService;
 import com.control.almacen.repository.EntradaRepository;
@@ -29,7 +30,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Date;
 
+import com.control.almacen.service.ListadoProductoService;
 import com.control.almacen.service.ProductoService;
+import com.control.almacen.service.ReconsiliacionProductosService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +49,16 @@ public class EntradaServiceImplement implements EntradaService {
     private EntradaRepository entradarepository;
 
     @Autowired
+    private ReconsiliacionProductosService reconsiliacionProductosService;
+
+    @Autowired
+    private ListadoProductoService listadoProducto;
+
+    @Autowired
     private ProductoService productoService;
+
+    @Autowired
+    private ProductoRepository productoRepository;
 
     @Autowired
     private ProductoMapper productoMapper;
@@ -54,11 +66,11 @@ public class EntradaServiceImplement implements EntradaService {
     @Autowired
     private AlmacenajeAreaMapper areaalmacenajesystemMapper;
 
-    @Autowired
-    private ListadoProductoRepository listadoProductoRepository;
 
     @Autowired
     private ReconsiliacionProductosRepository reconsiliacionRepository;
+
+
 
     @Override
     public Entrada findByNota(String nota) {
@@ -180,8 +192,6 @@ public class EntradaServiceImplement implements EntradaService {
     }
 
 
-
-
     @Override
     public boolean saveListEntradaProductoIngreso(List<ProductoIngreso> entradas) {
         return false;
@@ -193,53 +203,43 @@ public class EntradaServiceImplement implements EntradaService {
     public boolean saveEntradaProductoIngreso(ProductoIngreso productoIngreso) {
         boolean exito = false;
         try {
-            Producto producto = productoService.findByCodigo(productoIngreso.getCodigo());
 
-            if (producto.getCodigo() != null) {
-                   producto = new Producto();
+            String codigo = productoIngreso.getProducto().getCodigo();
+
+            Producto producto = productoService.findByCodigo(codigo);
+
+            if (producto.getCodigo() == null) {
+                   producto =   productoMapper.PojoToEntity(productoIngreso.getProducto());
                    ListadoProducto igresoToListadoProducto = new ListadoProducto();
 
-                    producto.setFechaIngreso(productoIngreso.getFechaIngreso());
-                    producto.setCodigo(productoIngreso.getCodigo());
-                    producto.setNombre(productoIngreso.getNombre());
-                    producto.setFechaUltimoIngreso(productoIngreso.getFechaUltimoIngreso());
-                    producto.setCantidadInicial(productoIngreso.getUltimaCantidadIngesada());
-                    producto.setCatidadActual(productoIngreso.getUltimaCantidadIngesada());
-                    producto.setUltimaCantidadIngesada(productoIngreso.getUltimaCantidadIngesada());
-                    producto.setNotas(productoIngreso.getNotas());
-                    producto.setActivo(productoIngreso.getActivo());
-
+                if(productoService.saveProducto(producto)){
                     igresoToListadoProducto.setNombre(producto.getNombre());
                     igresoToListadoProducto.setCodigo(producto.getCodigo());
                     igresoToListadoProducto.setDescripcion(producto.getDescription());
                     igresoToListadoProducto.setClasificacion(producto.getClasificacion());
-                    listadoProductoRepository.save(igresoToListadoProducto);
-
-                    for ( AlmacenajeAreaPojo almacen : productoIngreso.getAreaAlmacenajeSystem()) {
-                        AlmacenajeArea area =  areaalmacenajesystemMapper.PojoToEntity(almacen);
-                        producto.getAreaAlmacenajeSystem().add(area);
+                    if(listadoProducto.saveListadoProducto(igresoToListadoProducto)){
+                        exito = this.saveEntradaIngresoProducto(producto.getCodigo(),productoIngreso);
                     }
+                }
+
+                } else {
+//                    Long candidateRest = producto.getCatidadActual() + productoIngreso.getCantidadInicial();
+//                    producto.setCatidadActual(candidateRest);
+//                    producto.setUltimaCantidadIngesada(productoIngreso.getUltimaCantidadIngesada());
+//                    producto.setFechaUltimoIngreso(productoIngreso.getFechaUltimoIngreso());
                     productoService.saveProducto(producto);
                     exito = this.saveEntradaIngresoProducto(producto.getCodigo(),productoIngreso);
-                } else {
-
-                Long candidateRest = producto.getCatidadActual() + productoIngreso.getCantidadInicial();
-                producto.setCatidadActual(candidateRest);
-                producto.setUltimaCantidadIngesada(productoIngreso.getUltimaCantidadIngesada());
-                producto.setFechaUltimoIngreso(productoIngreso.getFechaUltimoIngreso());
             }
-            productoService.saveProducto(producto);
-
-            exito = this.saveEntradaIngresoProducto(producto.getCodigo(),productoIngreso);
 
         } catch (DataAccessException e) {
             logger.error(" ERROR : " + e);
             e.printStackTrace();
             return false;
         }
-
         return exito;
     }
+
+
 
 
     public boolean saveEntradaIngresoProducto(String codigo, ProductoIngreso productoIngreso){
@@ -256,27 +256,37 @@ public class EntradaServiceImplement implements EntradaService {
                 entrada.setTicket(productoIngreso.getTicket());
                 entrada.setCatidadActual(producto.getCatidadActual());
                 entrada.setEncargado(productoIngreso.getEncargadoCodigo());
-                entrada.setNota(productoIngreso.getNotas());
+             //   entrada.setNota(productoIngreso.getNotas());
                 entradarepository.save(entrada);
 
                 if(!producto.getActivo()){
                     ReconsiliacionProductos reconsiliacion = new ReconsiliacionProductos(producto,entrada);
-                    reconsiliacionRepository.save(reconsiliacion);
+                    reconsiliacionProductosService.save(reconsiliacion);
                 }
             }
             exito = true;
         } catch (DataAccessException e) {
             logger.error(" ERROR : " + e);
             e.printStackTrace();
+            return false;
         }
         return exito;
     }
 
-
-
-
     @Override
     public boolean saveEntrada(Entrada entrada) {
+        try{
+            entradarepository.save(entrada);
+            return true;
+        }catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+
+    public boolean saveEntradas(Entrada entrada) {
         logger.info("Save producto Ingresado");
 
         try {

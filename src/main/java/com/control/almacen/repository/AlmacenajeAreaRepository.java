@@ -20,7 +20,9 @@ import java.util.Date;
 import java.util.Optional;
 import org.springframework.data.repository.CrudRepository;
 import com.control.almacen.entitys.AlmacenajeArea;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface AlmacenajeAreaRepository extends CrudRepository< AlmacenajeArea, Long> {
  
 		public Optional<AlmacenajeArea> findByArea(String area);

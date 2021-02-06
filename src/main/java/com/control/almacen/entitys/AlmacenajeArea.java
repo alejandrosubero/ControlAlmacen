@@ -58,8 +58,6 @@ public class AlmacenajeArea implements Serializable {
 
 
 
-
-
     public AlmacenajeArea() { }
 
     public Long getId() {

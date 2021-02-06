@@ -18,7 +18,8 @@ import java.util.Optional;import java.util.Date;
 
 import java.util.ArrayList;
 import java.util.List;
-import com.control.almacen.entitys.Producto;import com.control.almacen.entitys.AlmacenajeArea;
+import com.control.almacen.entitys.Producto;
+import com.control.almacen.entitys.AlmacenajeArea;
 
 
 
@@ -63,7 +64,9 @@ public interface ProductoService{
 		public List<Producto>  findByClasificacionContaining(String clasificacion);
 
 		public Producto findById(Long id);
+
 		public boolean saveProducto(Producto producto);
+
 		public List<Producto> getAllProducto();
 		public boolean updateProducto(Producto producto);
  		public boolean saveOrUpdateProducto(Producto producto);
