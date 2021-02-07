@@ -29,50 +29,43 @@ import org.springframework.stereotype.Repository;
 public interface ProductoRepository extends CrudRepository< Producto, Long> {
  
 		public Optional<Producto> findByCodigo(String codigo);
-
-		public List<Producto> findByCodigoContaining(String codigo);
 		public Optional<Producto> findByNombre(String nombre);
-		public List<Producto> findByNombreContaining(String nombre);
-		public Optional<Producto> findByDescription(String description);
-		public List<Producto> findByDescriptionContaining(String description);
-		public Optional<Producto> findByCantidadInicial(Long cantidadInicial);
-		public List<Producto> findByCantidadInicialContaining(Long cantidadInicial);
-		public Optional<Producto> findByCatidadActual(Long catidadActual);
-		public List<Producto> findByCatidadActualContaining(Long catidadActual);
-		public Optional<Producto> findByNotas(String notas);
-		public List<Producto> findByNotasContaining(String notas);
 		public Optional<Producto> findByActivo(Boolean activo);
-		public List<Producto> findByActivoContaining(Boolean activo);
-		public Optional<Producto> findByFechaIngreso(Date fechaIngreso);
-		public List<Producto> findByFechaIngresoContaining(Date fechaIngreso);
-		public Optional<Producto> findByClasificacion(String clasificacion);
-		public List<Producto> findByClasificacionContaining(String clasificacion);
 
-	@Query(value = "SELECT p FROM Producto p WHERE CONCAT(p.codigo, ' ', p.nombre, ' ', p.description,' ', p.catidadActual, ' ' , p.fechaIngreso, ' ', p.clasificacion) LIKE %?1%")
-	public List<Producto> finBySearch(String keyword);
+	public List<Producto> findByActivoContaining(Boolean activo);
+	public List<Producto> findByCodigoContaining(String codigo);
+	public List<Producto> findByNombreContaining(String nombre);
+	public List<Producto> findByCantidadInicialContaining(Long cantidadInicial);
+	public List<Producto> findByCatidadActualContaining(Long catidadActual);
+	public List<Producto> findByClasificacionContaining(String clasificacion);
+	public List<Producto> findByDescriptionContaining(String description);
+	public List<Producto> findByNotasContaining(String notas);
+	public List<Producto> findByFechaIngresoContaining(Date fechaIngreso);
 
-	@Query(value="SELECT t FROM Producto t WHERE t.fechaIngreso Between ?1 and ?2")
-	public List<Producto> findAllBetweenDates(@Temporal Date desde, @Temporal Date hasta);
-
-	@Query("select a from Producto a where TRUNC(a.fechaIngreso) between ?1 and ?2")
-	List<Producto> findByFechaBetween(@Temporal Date inicio, @Temporal Date fin);
-
-
-	@Query(value = "from Producto t where t.fechaIngreso BETWEEN :startDate AND :endDate")
-	public List<Producto> getAllBetweenDates(@Param("startDate")Date startDate, @Param("endDate")Date endDate);
-
-
-	// findAllByStartDateLessThanEqualAndEndDateGreaterThanEqual(OffsetDateTime endDate, OffsetDateTime startDate);
-
-//	@Query(value = "from EntityClassTable t where yourDate BETWEEN :startDate AND :endDate")
-//	public List<EntityClassTable> getAllBetweenDates(@Param("startDate")Date startDate,@Param("endDate")Date endDate);
+//	public Optional<Producto> findByCantidadInicial(Long cantidadInicial);
+//	public Optional<Producto> findByCatidadActual(Long catidadActual);
+//	public Optional<Producto> findByNotas(String notas);
+//	public Optional<Producto> findByFechaIngreso(Date fechaIngreso);
+//	public Optional<Producto> findByClasificacion(String clasificacion);
+//	public Optional<Producto> findByDescription(String description);
 
 
-//	@Query(value = "SELECT t FROM Humano t WHERE t.id =?1")
-//	public Humano findByIdQuery(Long id);
-// SELECT * FROM `usuarios` WHERE fecha BETWEEN '2016-03-20' AND '2016-20-31'
+		@Query(value = "SELECT p FROM Producto p WHERE CONCAT(p.codigo, ' ', p.nombre, ' ', p.description,' ', p.catidadActual, ' ' , p.fechaIngreso, ' ', p.clasificacion) LIKE %?1%")
+		public List<Producto> finBySearch(String keyword);
 
-// https://www.baeldung.com/spring-data-jpa-query-by-date
+
+		@Query(value="SELECT t FROM Producto t WHERE t.fechaIngreso Between ?1 and ?2")
+		public List<Producto> findAllBetweenDates(@Temporal Date desde, @Temporal Date hasta);
+
+
+		@Query("select a from Producto a where TRUNC(a.fechaIngreso) between ?1 and ?2")
+		List<Producto> findByFechaBetween(@Temporal Date inicio, @Temporal Date fin);
+
+
+		@Query(value = "from Producto t where t.fechaIngreso BETWEEN :startDate AND :endDate")
+		public List<Producto> getAllBetweenDates(@Param("startDate")Date startDate, @Param("endDate")Date endDate);
+
+
 
 }
  /*
@@ -94,3 +87,16 @@ public interface ProductoRepository extends CrudRepository< Producto, Long> {
 */
 
 
+
+
+
+// findAllByStartDateLessThanEqualAndEndDateGreaterThanEqual(OffsetDateTime endDate, OffsetDateTime startDate);
+//	@Query(value = "from EntityClassTable t where yourDate BETWEEN :startDate AND :endDate")
+//	public List<EntityClassTable> getAllBetweenDates(@Param("startDate")Date startDate,@Param("endDate")Date endDate);
+
+
+//	@Query(value = "SELECT t FROM Humano t WHERE t.id =?1")
+//	public Humano findByIdQuery(Long id);
+// SELECT * FROM `usuarios` WHERE fecha BETWEEN '2016-03-20' AND '2016-20-31'
+
+// https://www.baeldung.com/spring-data-jpa-query-by-date

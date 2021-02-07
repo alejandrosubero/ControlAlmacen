@@ -14,8 +14,9 @@ Create on Sat Jan 30 15:24:05 ART 2021
 
 package com.control.almacen.serviceImplement;
 
-import com.control.almacen.entitys.Entrada;
-import com.control.almacen.entitys.ListadoProducto;
+import com.control.almacen.entitys.*;
+import com.control.almacen.mapper.ProductoMapper;
+import com.control.almacen.pojo.ProductoIngreso;
 import com.control.almacen.repository.EntradaRepository;
 import com.control.almacen.repository.ListadoProductoRepository;
 import com.control.almacen.repository.ReconsiliacionProductosRepository;
@@ -29,14 +30,13 @@ import java.util.List;
 import java.util.Date;
 
 import com.control.almacen.service.ReconsiliacionProductosService;
+import com.control.almacen.validation.ProductoValidation;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.criterion.CriteriaQuery;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
-import com.control.almacen.entitys.Producto;
-import com.control.almacen.entitys.AlmacenajeArea;
 
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -49,13 +49,8 @@ public class ProductoServiceImplement implements ProductoService {
     @Autowired
     private ProductoRepository productorepository;
 
-
-    @Autowired
-    private ReconsiliacionProductosService reconsiliacionProductosService;
-
     @Autowired
     private ListadoProductoService listadoProducto;
-
 
     @Autowired
     private ReconsiliacionProductosRepository reconsiliacionRepository;
@@ -64,218 +59,27 @@ public class ProductoServiceImplement implements ProductoService {
     private ListadoProductoRepository listadoProductoRepository;
 
     @Autowired
+    private ReconsiliacionProductosService reconsiliacionProductosService;
+
+    @Autowired
     private EntradaRepository entradaRepository;
 
+    @Autowired
+    private ProductoValidation productoValidationService;
 
-    @Override
-    public List<Producto> search(String search) {
-        return productorepository.finBySearch(search);
-    }
-
-
-
-    @Override
-    public boolean saveProducto(Producto producto) {
-        logger.info("Save Proyect");
-        try {
-            Optional<Producto> prod = productorepository.findByCodigo(producto.getCodigo());
-            if (!prod.isPresent()){
-                producto.setCantidadInicial(producto.getUltimaCantidadIngesada());
-                producto.setCatidadActual(producto.getUltimaCantidadIngesada());
-                productorepository.save(producto);
-
-                ListadoProducto igresoToListadoProducto = new ListadoProducto();
-                igresoToListadoProducto.setNombre(producto.getNombre());
-                igresoToListadoProducto.setCodigo(producto.getCodigo());
-                igresoToListadoProducto.setDescripcion(producto.getDescription());
-                igresoToListadoProducto.setClasificacion(producto.getClasificacion());
-
-                listadoProducto.saveListadoProducto(igresoToListadoProducto);
-
-            }else{
-                Producto productoEntity = new Producto();
-                productoEntity = prod.get();
-                Long valor = productoEntity.getCatidadActual() + producto.getUltimaCantidadIngesada();
-                producto.setCatidadActual(valor);
-                productorepository.save(producto);
-                ********
-            }
-
-//            if(!prod.getCodigo().isEmpty()){
-//
-//            }
-
-            return true;
-        } catch (DataAccessException e) {
-            logger.error(" ERROR : " + e);
-            e.printStackTrace();
-            return false;
-        }
-    }
+    @Autowired
+    private ProductoMapper productoMapper;
 
 
-
+    private Producto product;
 
 
     @Override
-    public Producto findByCodigo(String codigo) {
+    public List<Producto> search(String search) {  return productorepository.finBySearch(search); }
 
-        logger.info("Starting getProducto");
-        Producto productoEntity = new Producto();
-        Optional<Producto> fileOptional1 = productorepository.findByCodigo(codigo);
-
-        if (fileOptional1.isPresent()) {
-
-            try {
-                productoEntity = fileOptional1.get();
-            } catch (DataAccessException e) {
-                logger.error(" ERROR : " + e);
-
-            }
-        }
-        return productoEntity;
-    }
 
     @Override
-    public Producto findByNombre(String nombre) {
-
-        logger.info("Starting getProducto");
-        Producto productoEntity = new Producto();
-        Optional<Producto> fileOptional1 = productorepository.findByNombre(nombre);
-
-        if (fileOptional1.isPresent()) {
-
-            try {
-                productoEntity = fileOptional1.get();
-            } catch (DataAccessException e) {
-                logger.error(" ERROR : " + e);
-
-            }
-        }
-        return productoEntity;
-    }
-
-    @Override
-    public Producto findByDescription(String description) {
-
-        logger.info("Starting getProducto");
-        Producto productoEntity = new Producto();
-        Optional<Producto> fileOptional1 = productorepository.findByDescription(description);
-        if (fileOptional1.isPresent()) {
-            try {
-                productoEntity = fileOptional1.get();
-            } catch (DataAccessException e) {
-                logger.error(" ERROR : " + e);
-
-            }
-        }
-        return productoEntity;
-    }
-
-    @Override
-    public Producto findByCantidadInicial(Long cantidadInicial) {
-        logger.info("Starting getProducto");
-        Producto productoEntity = new Producto();
-        Optional<Producto> fileOptional1 = productorepository.findByCantidadInicial(cantidadInicial);
-        if (fileOptional1.isPresent()) {
-            try {
-                productoEntity = fileOptional1.get();
-            } catch (DataAccessException e) {
-                logger.error(" ERROR : " + e);
-
-            }
-        }
-        return productoEntity;
-    }
-
-    @Override
-    public Producto findByCatidadActual(Long catidadActual) {
-
-        logger.info("Starting getProducto");
-        Producto productoEntity = new Producto();
-        Optional<Producto> fileOptional1 = productorepository.findByCatidadActual(catidadActual);
-        if (fileOptional1.isPresent()) {
-            try {
-                productoEntity = fileOptional1.get();
-            } catch (DataAccessException e) {
-                logger.error(" ERROR : " + e);
-            }
-        }
-        return productoEntity;
-    }
-
-    @Override
-    public Producto findByNotas(String notas) {
-        logger.info("Starting getProducto");
-        Producto productoEntity = new Producto();
-        Optional<Producto> fileOptional1 = productorepository.findByNotas(notas);
-
-        if (fileOptional1.isPresent()) {
-
-            try {
-                productoEntity = fileOptional1.get();
-            } catch (DataAccessException e) {
-                logger.error(" ERROR : " + e);
-
-            }
-        }
-        return productoEntity;
-    }
-
-    @Override
-    public Producto findByActivo(Boolean activo) {
-        logger.info("Starting getProducto");
-        Producto productoEntity = new Producto();
-        Optional<Producto> fileOptional1 = productorepository.findByActivo(activo);
-
-        if (fileOptional1.isPresent()) {
-            try {
-                productoEntity = fileOptional1.get();
-            } catch (DataAccessException e) {
-                logger.error(" ERROR : " + e);
-
-            }
-        }
-        return productoEntity;
-    }
-
-    @Override
-    public Producto findByFechaIngreso(Date fechaIngreso) {
-
-        logger.info("Starting getProducto");
-        Producto productoEntity = new Producto();
-        Optional<Producto> fileOptional1 = productorepository.findByFechaIngreso(fechaIngreso);
-
-        if (fileOptional1.isPresent()) {
-
-            try {
-                productoEntity = fileOptional1.get();
-            } catch (DataAccessException e) {
-                logger.error(" ERROR : " + e);
-
-            }
-        }
-        return productoEntity;
-    }
-
-    @Override
-    public Producto findByClasificacion(String clasificacion) {
-
-        logger.info("Starting getProducto");
-        Producto productoEntity = new Producto();
-        Optional<Producto> fileOptional1 = productorepository.findByClasificacion(clasificacion);
-
-        if (fileOptional1.isPresent()) {
-
-            try {
-                productoEntity = fileOptional1.get();
-            } catch (DataAccessException e) {
-                logger.error(" ERROR : " + e);
-
-            }
-        }
-        return productoEntity;
-    }
+    public Producto findById(Long id) { return productorepository.findById(id).get(); }
 
 
     @Override
@@ -287,15 +91,61 @@ public class ProductoServiceImplement implements ProductoService {
     }
 
 
+    @Override
+    public boolean save(ProductoIngreso productoIngreso) {
+        boolean exito = false;
+        Producto producto =  productoMapper.PojoToEntity(productoValidationService.valida(productoIngreso.getProducto()));
+        if(this.saveProducto(producto)){
+            Entrada entrada = new Entrada();
+            entrada.setIdProductoEnBase(this.product.getId());
+            entrada.setCodigoProducto(this.product.getCodigo());
+            entrada.setNombreProducto(this.product.getNombre());
+            entrada.setFechaIngreso(this.product.getFechaIngreso());
+            entrada.setCantidadIngresada(this.product.getUltimaCantidadIngesada());
+            entrada.setCatidadActual(this.product.getCatidadActual());
+            entrada.setNota(this.product.getNotas());
+            entrada.setTicket(productoIngreso.getTicket());
+            entrada.setEncargado(productoIngreso.getEncargadoCodigo());
+            Entrada entrada2 = entradaRepository.save(entrada);
+
+            if(entrada2.getCodigoProducto() != null){ exito = true; }
+            if(!producto.getActivo()){
+                logger.info("Save Producto reconsilacion");
+                ReconsiliacionProductos reconsiliacion = new ReconsiliacionProductos(producto,entrada);
+                reconsiliacionProductosService.save(reconsiliacion);
+            }
+        }
+        return exito;
+    }
 
 
-
-
-
-    public boolean saveProductox(Producto producto) {
-        logger.info("Save Proyect");
+    @Override
+    public boolean saveProducto(Producto producto) {
+        logger.info("Save Producto");
         try {
-            productorepository.save(producto);
+            Optional<Producto> prod = productorepository.findByCodigo(producto.getCodigo());
+
+            if (!prod.isPresent()){
+                producto.setCantidadInicial(producto.getUltimaCantidadIngesada());
+                producto.setCatidadActual(producto.getUltimaCantidadIngesada());
+                product = productorepository.save(producto);
+
+                logger.info("Save Producto in list");
+                ListadoProducto igresoToListadoProducto = new ListadoProducto();
+                igresoToListadoProducto.setNombre(producto.getNombre());
+                igresoToListadoProducto.setCodigo(producto.getCodigo());
+                igresoToListadoProducto.setDescripcion(producto.getDescription());
+                igresoToListadoProducto.setClasificacion(producto.getClasificacion());
+                listadoProducto.saveListadoProducto(igresoToListadoProducto);
+
+            }else{
+                Producto productoEntity =  prod.get();
+                Long valor = productoEntity.getCatidadActual() + producto.getUltimaCantidadIngesada();
+                productoEntity.setCatidadActual(valor);
+                productoEntity.setUltimaCantidadIngesada(producto.getUltimaCantidadIngesada());
+                productoEntity.setFechaUltimoIngreso(producto.getFechaUltimoIngreso());
+                product = productorepository.save(productoEntity);
+            }
             return true;
         } catch (DataAccessException e) {
             logger.error(" ERROR : " + e);
@@ -306,6 +156,38 @@ public class ProductoServiceImplement implements ProductoService {
 
 
 
+    @Override
+    public Producto findByCodigo(String codigo) {
+        logger.info("Starting getProducto");
+        Producto productoEntity = new Producto();
+        Optional<Producto> fileOptional1 = productorepository.findByCodigo(codigo);
+        if (fileOptional1.isPresent()) {
+            try {
+                productoEntity = fileOptional1.get();
+            } catch (DataAccessException e) {
+                logger.error(" ERROR : " + e);
+            }
+        }
+        return productoEntity;
+    }
+
+
+    @Override
+    public Producto findByNombre(String nombre) {
+
+        logger.info("Starting getProducto");
+        Producto productoEntity = new Producto();
+        Optional<Producto> fileOptional1 = productorepository.findByNombre(nombre);
+        if (fileOptional1.isPresent()) {
+            try {
+                productoEntity = fileOptional1.get();
+            } catch (DataAccessException e) {
+                logger.error(" ERROR : " + e);
+            }
+        }
+        return productoEntity;
+    }
+
 
 
     @Override
@@ -314,7 +196,6 @@ public class ProductoServiceImplement implements ProductoService {
         boolean clave = false;
         Producto empre = findById(producto.getId());
         empre = producto;
-
         try {
             productorepository.save(empre);
             clave = true;
@@ -322,14 +203,7 @@ public class ProductoServiceImplement implements ProductoService {
             logger.error(" ERROR : " + e);
             clave = false;
         }
-
         return clave;
-    }
-
-
-    @Override
-    public Producto findById(Long id) {
-        return productorepository.findById(id).get();
     }
 
 
@@ -439,7 +313,17 @@ public class ProductoServiceImplement implements ProductoService {
     }
 
 
-
+    public boolean saveProductox(Producto producto) {
+        logger.info("Save Proyect");
+        try {
+            productorepository.save(producto);
+            return true;
+        } catch (DataAccessException e) {
+            logger.error(" ERROR : " + e);
+            e.printStackTrace();
+            return false;
+        }
+    }
 
 
 
@@ -462,5 +346,117 @@ public class ProductoServiceImplement implements ProductoService {
 * limitations under the License.
 */
 
+
+
+    //    @Override
+//    public Producto findByDescription(String description) {
+//
+//        logger.info("Starting getProducto");
+//        Producto productoEntity = new Producto();
+//        Optional<Producto> fileOptional1 = productorepository.findByDescription(description);
+//        if (fileOptional1.isPresent()) {
+//            try {
+//                productoEntity = fileOptional1.get();
+//            } catch (DataAccessException e) {
+//                logger.error(" ERROR : " + e);
+//            }
+//        }
+//        return productoEntity;
+//    }
+
+//    @Override
+//    public Producto findByCantidadInicial(Long cantidadInicial) {
+//        logger.info("Starting getProducto");
+//        Producto productoEntity = new Producto();
+//        Optional<Producto> fileOptional1 = productorepository.findByCantidadInicial(cantidadInicial);
+//        if (fileOptional1.isPresent()) {
+//            try {
+//                productoEntity = fileOptional1.get();
+//            } catch (DataAccessException e) {
+//                logger.error(" ERROR : " + e);
+//
+//            }
+//        }
+//        return productoEntity;
+//    }
+
+//    @Override
+//    public Producto findByCatidadActual(Long catidadActual) {
+//
+//        logger.info("Starting getProducto");
+//        Producto productoEntity = new Producto();
+//        Optional<Producto> fileOptional1 = productorepository.findByCatidadActual(catidadActual);
+//        if (fileOptional1.isPresent()) {
+//            try {
+//                productoEntity = fileOptional1.get();
+//            } catch (DataAccessException e) {
+//                logger.error(" ERROR : " + e);
+//            }
+//        }
+//        return productoEntity;
+//    }
+
+//    @Override
+//    public Producto findByNotas(String notas) {
+//        logger.info("Starting getProducto");
+//        Producto productoEntity = new Producto();
+//        Optional<Producto> fileOptional1 = productorepository.findByNotas(notas);
+//        if (fileOptional1.isPresent()) {
+//            try {
+//                productoEntity = fileOptional1.get();
+//            } catch (DataAccessException e) {
+//                logger.error(" ERROR : " + e);
+//            }
+//        }
+//        return productoEntity;
+//    }
+
+
+//    @Override
+//    public Producto findByActivo(Boolean activo) {
+//        logger.info("Starting getProducto");
+//        Producto productoEntity = new Producto();
+//        Optional<Producto> fileOptional1 = productorepository.findByActivo(activo);
+//        if (fileOptional1.isPresent()) {
+//            try {
+//                productoEntity = fileOptional1.get();
+//            } catch (DataAccessException e) {
+//                logger.error(" ERROR : " + e);
+//            }
+//        }
+//        return productoEntity;
+//    }
+
+//    @Override
+//    public Producto findByFechaIngreso(Date fechaIngreso) {
+//
+//        logger.info("Starting getProducto");
+//        Producto productoEntity = new Producto();
+//        Optional<Producto> fileOptional1 = productorepository.findByFechaIngreso(fechaIngreso);
+//        if (fileOptional1.isPresent()) {
+//            try {
+//                productoEntity = fileOptional1.get();
+//            } catch (DataAccessException e) {
+//                logger.error(" ERROR : " + e);
+//            }
+//        }
+//        return productoEntity;
+//    }
+
+
+//    @Override
+//    public Producto findByClasificacion(String clasificacion) {
+//        logger.info("Starting getProducto");
+//        Producto productoEntity = new Producto();
+//        Optional<Producto> fileOptional1 = productorepository.findByClasificacion(clasificacion);
+//        if (fileOptional1.isPresent()) {
+//            try {
+//                productoEntity = fileOptional1.get();
+//            } catch (DataAccessException e) {
+//                logger.error(" ERROR : " + e);
+//            }
+//        }
+//        return productoEntity;
+//    }
 
 }

@@ -20,58 +20,55 @@ import java.util.ArrayList;
 import java.util.List;
 import com.control.almacen.entitys.Producto;
 import com.control.almacen.entitys.AlmacenajeArea;
-
+import com.control.almacen.pojo.ProductoIngreso;
 
 
 public interface ProductoService{
 
-		public List<Producto> search( String search);
 
+		public Producto findById(Long id);
+		public boolean save(ProductoIngreso productoIngresoList);
 		public Producto  findByCodigo(String codigo);
 
 		public Producto  findByNombre(String nombre);
 
-		public Producto  findByDescription(String description);
 
-		public Producto  findByCantidadInicial(Long cantidadInicial);
-
-		public Producto  findByCatidadActual(Long catidadActual);
-
-		public Producto  findByNotas(String notas);
-
-		public Producto  findByActivo(Boolean activo);
-
-		public Producto  findByFechaIngreso(Date fechaIngreso);
-
-		public Producto  findByClasificacion(String clasificacion);
-
+		public List<Producto> getAllProducto();
 		public List<Producto>  findByCodigoContaining(String codigo);
 
 		public List<Producto>  findByNombreContaining(String nombre);
-
-		public List<Producto>  findByDescriptionContaining(String description);
-
-		public List<Producto>  findByCantidadInicialContaining(Long cantidadInicial);
-
-		public List<Producto>  findByCatidadActualContaining(Long catidadActual);
-
-		public List<Producto>  findByNotasContaining(String notas);
-
 		public List<Producto>  findByActivoContaining(Boolean activo);
 
+		public List<Producto> search( String search);
+		public List<Producto>  findByDescriptionContaining(String description);
+		public List<Producto>  findByCantidadInicialContaining(Long cantidadInicial);
+		public List<Producto>  findByCatidadActualContaining(Long catidadActual);
+		public List<Producto>  findByNotasContaining(String notas);
 		public List<Producto>  findByFechaIngresoContaining(Date fechaIngreso);
-
 		public List<Producto>  findByClasificacionContaining(String clasificacion);
 
-		public Producto findById(Long id);
+		public List<Producto>  findByAlmacenajeAreaContaining(AlmacenajeArea areaAlmacenajeSystem);
 
 		public boolean saveProducto(Producto producto);
-
-		public List<Producto> getAllProducto();
 		public boolean updateProducto(Producto producto);
- 		public boolean saveOrUpdateProducto(Producto producto);
+		public boolean saveOrUpdateProducto(Producto producto);
 
-		public List<Producto>  findByAlmacenajeAreaContaining(AlmacenajeArea areaAlmacenajeSystem);
+
+	//	public Producto  findByCantidadInicial(Long cantidadInicial);
+	//	public Producto  findByDescription(String description);
+	// public Producto  findByFechaIngreso(Date fechaIngreso);
+	// public Producto  findByClasificacion(String clasificacion);
+	//	public Producto  findByCatidadActual(Long catidadActual);
+		//	public Producto  findByNotas(String notas);
+		//	public Producto  findByActivo(Boolean activo);
+
+
+
+
+
+
+
+
 }
  /*
  Copyright (C) 2008 Google Inc.

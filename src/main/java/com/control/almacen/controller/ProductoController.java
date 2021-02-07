@@ -14,7 +14,9 @@ Create on Sat Jan 30 15:24:11 ART 2021
 
 package com.control.almacen.controller;
 
+import com.control.almacen.entitys.Entrada;
 import com.control.almacen.entitys.Producto;
+import com.control.almacen.entitys.ReconsiliacionProductos;
 import com.control.almacen.pojo.*;
 import com.control.almacen.validation.ProductoValidation;
 import com.control.almacen.mapper.ProductoMapper;
@@ -62,8 +64,8 @@ public class ProductoController {
 
     @PostMapping("/save")
     private Boolean saveProducto(@RequestBody ProductoIngreso productoIngresoList) {
-
-        return productoService.saveProducto(productoMapper.PojoToEntity(productoValidationService.valida(productoIngresoList.getProducto())));
+       //  return productoService.saveProducto(productoMapper.PojoToEntity(productoValidationService.valida(productoIngresoList.getProducto())));
+        return productoService.save(productoIngresoList);
     }
 
     @GetMapping("/GetAllProducto")
