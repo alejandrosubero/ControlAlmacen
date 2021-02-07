@@ -95,6 +95,15 @@ public class ReconsiliacionProductos implements Serializable {
         }
 
 
+    public ReconsiliacionProductos(Producto producto, SalidaProducto salida) {
+        this.mapperProducto(producto);
+        this.fecha = salida.getFechadesalida();
+        this.ticket = salida.getTicket();
+        this.encargado = salida.getEncargado();
+    }
+
+
+
     public void mapperProducto (Producto producto) {
         this.codigo = producto.getCodigo();
         this.nombre = producto.getNombre();

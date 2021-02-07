@@ -44,9 +44,6 @@ public class SalidaProducto implements Serializable {
     @Column(name = "cantidad_de_salida", updatable = true, nullable = true, length = 200)
     private Long cantidadSalida;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Cliente cliente;
-
 
     @Column(name = "ticket", updatable = true, nullable = true, length = 200)
     private String ticket;
@@ -72,6 +69,10 @@ public class SalidaProducto implements Serializable {
 
     @Column(name = "nota", updatable = true, nullable = true, length = 200)
     private String nota;
+
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    private Cliente cliente;
 
 
 

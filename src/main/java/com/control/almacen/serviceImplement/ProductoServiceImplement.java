@@ -17,12 +17,9 @@ package com.control.almacen.serviceImplement;
 import com.control.almacen.entitys.*;
 import com.control.almacen.mapper.ProductoMapper;
 import com.control.almacen.pojo.ProductoIngreso;
-import com.control.almacen.repository.EntradaRepository;
-import com.control.almacen.repository.ListadoProductoRepository;
-import com.control.almacen.repository.ReconsiliacionProductosRepository;
+import com.control.almacen.repository.*;
 import com.control.almacen.service.ListadoProductoService;
 import com.control.almacen.service.ProductoService;
-import com.control.almacen.repository.ProductoRepository;
 
 import java.util.Optional;
 import java.util.ArrayList;
@@ -65,6 +62,9 @@ public class ProductoServiceImplement implements ProductoService {
     private EntradaRepository entradaRepository;
 
     @Autowired
+    private SalidaProductoRepository salidaProductoRepository;
+
+    @Autowired
     private ProductoValidation productoValidationService;
 
     @Autowired
@@ -72,6 +72,7 @@ public class ProductoServiceImplement implements ProductoService {
 
 
     private Producto product;
+    private Optional<Producto> prod;
 
 
     @Override
@@ -95,7 +96,81 @@ public class ProductoServiceImplement implements ProductoService {
     public boolean save(ProductoIngreso productoIngreso) {
         boolean exito = false;
         Producto producto =  productoMapper.PojoToEntity(productoValidationService.valida(productoIngreso.getProducto()));
-        if(this.saveProducto(producto)){
+        if(this.saveProductos(producto, productoIngreso)){
+            if(!productoIngreso.getSalida()){
+                exito =  this.entradaProducto(productoIngreso, producto);
+            }else{
+                exito = this.salidaProducto(productoIngreso, producto);
+            }
+        }
+        return exito;
+    }
+
+
+    private boolean saveProductos(Producto producto, ProductoIngreso productoIngreso) {
+        logger.info("Save Producto");
+        try {
+            this.prod = productorepository.findByCodigo(producto.getCodigo());
+            if (!this.prod.isPresent()){
+                producto.setCantidadInicial(producto.getUltimaCantidadIngesada());
+                producto.setCatidadActual(producto.getUltimaCantidadIngesada());
+                product = productorepository.save(producto);
+                this.saveListado(producto);
+            }else{
+
+               if (!productoIngreso.getSalida()){
+                   this.addProduct(producto);
+               }else{
+                   this.restProduct(producto);
+               }
+            }
+            return true;
+        } catch (DataAccessException e) {
+            logger.error(" ERROR : " + e);
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
+    private boolean salidaProducto(ProductoIngreso productoIngreso, Producto producto){
+        boolean exito = false;
+        try {
+            SalidaProducto salida = new SalidaProducto();
+
+            salida.setCantidadSalida(this.product.getUltimaCantidadSalida());
+            salida.setFechadesalida(this.product.getFechaUltimaSalida());
+            salida.setCatidadActual(this.product.getCatidadActual());
+            salida.setTicket(productoIngreso.getTicket());
+            salida.setIdProductoEnBase(this.product.getId());
+            salida.setCodigoProducto(this.product.getCodigo());
+            salida.setNombreProducto(this.product.getNombre());
+            salida.setEncargado(productoIngreso.getEncargadoCodigo());
+            salida.setNota(productoIngreso.getProducto().getNotas());
+            salida.setCliente(productoIngreso.getCliente());
+
+            SalidaProducto sali = salidaProductoRepository.save(salida);
+            if(sali.getCodigoProducto() != null){ exito = true; }
+
+            if(!producto.getActivo()){
+                logger.info("Save Producto reconsilacion");
+                ReconsiliacionProductos reconsiliacion = new ReconsiliacionProductos(producto, salida);
+                reconsiliacionProductosService.save(reconsiliacion);
+            }
+        }catch (DataAccessException e){
+            logger.error(" ERROR : " + e);
+            e.printStackTrace();
+            return false;
+        }
+
+
+        return false;
+    }
+
+
+    private boolean entradaProducto(ProductoIngreso productoIngreso, Producto producto){
+        boolean exito = false;
+        try {
             Entrada entrada = new Entrada();
             entrada.setIdProductoEnBase(this.product.getId());
             entrada.setCodigoProducto(this.product.getCodigo());
@@ -109,51 +184,52 @@ public class ProductoServiceImplement implements ProductoService {
             Entrada entrada2 = entradaRepository.save(entrada);
 
             if(entrada2.getCodigoProducto() != null){ exito = true; }
+
             if(!producto.getActivo()){
                 logger.info("Save Producto reconsilacion");
                 ReconsiliacionProductos reconsiliacion = new ReconsiliacionProductos(producto,entrada);
                 reconsiliacionProductosService.save(reconsiliacion);
             }
+        }catch (DataAccessException e){
+            logger.error(" ERROR : " + e);
+            e.printStackTrace();
+            return false;
         }
         return exito;
     }
 
 
-    @Override
-    public boolean saveProducto(Producto producto) {
-        logger.info("Save Producto");
-        try {
-            Optional<Producto> prod = productorepository.findByCodigo(producto.getCodigo());
-
-            if (!prod.isPresent()){
-                producto.setCantidadInicial(producto.getUltimaCantidadIngesada());
-                producto.setCatidadActual(producto.getUltimaCantidadIngesada());
-                product = productorepository.save(producto);
-
-                logger.info("Save Producto in list");
-                ListadoProducto igresoToListadoProducto = new ListadoProducto();
-                igresoToListadoProducto.setNombre(producto.getNombre());
-                igresoToListadoProducto.setCodigo(producto.getCodigo());
-                igresoToListadoProducto.setDescripcion(producto.getDescription());
-                igresoToListadoProducto.setClasificacion(producto.getClasificacion());
-                listadoProducto.saveListadoProducto(igresoToListadoProducto);
-
-            }else{
-                Producto productoEntity =  prod.get();
-                Long valor = productoEntity.getCatidadActual() + producto.getUltimaCantidadIngesada();
-                productoEntity.setCatidadActual(valor);
-                productoEntity.setUltimaCantidadIngesada(producto.getUltimaCantidadIngesada());
-                productoEntity.setFechaUltimoIngreso(producto.getFechaUltimoIngreso());
-                product = productorepository.save(productoEntity);
-            }
-            return true;
-        } catch (DataAccessException e) {
-            logger.error(" ERROR : " + e);
-            e.printStackTrace();
-            return false;
-        }
+    private void saveListado(Producto producto){
+        logger.info("Save Producto in list");
+        ListadoProducto igresoToListadoProducto = new ListadoProducto();
+        igresoToListadoProducto.setNombre(producto.getNombre());
+        igresoToListadoProducto.setCodigo(producto.getCodigo());
+        igresoToListadoProducto.setDescripcion(producto.getDescription());
+        igresoToListadoProducto.setClasificacion(producto.getClasificacion());
+        listadoProducto.saveListadoProducto(igresoToListadoProducto);
     }
 
+
+    private void addProduct(Producto producto){
+
+        Producto productoEntity =  this.prod.get();
+        Long valor = productoEntity.getCatidadActual() + producto.getUltimaCantidadIngesada();
+        productoEntity.setCatidadActual(valor);
+        productoEntity.setUltimaCantidadIngesada(producto.getUltimaCantidadIngesada());
+        productoEntity.setFechaUltimoIngreso(producto.getFechaUltimoIngreso());
+        product = productorepository.save(productoEntity);
+    }
+
+
+    private void restProduct(Producto producto){
+
+        Producto productoEntity =  this.prod.get();
+        Long valor = productoEntity.getCatidadActual() - producto.getUltimaCantidadIngesada();
+        productoEntity.setCatidadActual(valor);
+        productoEntity.setUltimaCantidadSalida(producto.getUltimaCantidadSalida());
+        productoEntity.setFechaUltimoIngreso(producto.getFechaUltimoIngreso());
+        product = productorepository.save(productoEntity);
+    }
 
 
     @Override
@@ -312,8 +388,8 @@ public class ProductoServiceImplement implements ProductoService {
 
     }
 
-
-    public boolean saveProductox(Producto producto) {
+    @Override
+    public boolean saveProducto(Producto producto) {
         logger.info("Save Proyect");
         try {
             productorepository.save(producto);
