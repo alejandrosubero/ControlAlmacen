@@ -43,17 +43,12 @@ import javax.persistence.PersistenceContext;
 public class ProductoServiceImplement implements ProductoService {
 
     protected static final Log logger = LogFactory.getLog(ProductoServiceImplement.class);
+
     @Autowired
     private ProductoRepository productorepository;
 
     @Autowired
     private ListadoProductoService listadoProducto;
-
-    @Autowired
-    private ReconsiliacionProductosRepository reconsiliacionRepository;
-
-    @Autowired
-    private ListadoProductoRepository listadoProductoRepository;
 
     @Autowired
     private ReconsiliacionProductosService reconsiliacionProductosService;
@@ -75,6 +70,30 @@ public class ProductoServiceImplement implements ProductoService {
     private Optional<Producto> prod;
 
 
+    /*
+    * REGLAS DEL NEGOCIO O PRODUCTOS:
+    * 1) AL INGRESAR UN PRODUC SE SALVA UNA ENTRADA, SI ES NEW SE AGREGA ALA LISTA DE PRODUCTOS SI NO ESTA ACTIVO SE AGREGA A RECONSILIACION
+    * 2) AL SACAR O DAR DE ALTA UN PRODUC SE SALVA UNA SALIDA,  SI NO ESTA ACTIVO SE AGREGA A RECONSILIACION.
+    * 3) AL EDITAR EL PRODUCTO EN LA MODALIDAD DE EDICION SE CUMPLEN LAS REGLAS DE EDICION Y SE SALVA EL PRODUCTO CON EL METODO SAVEPRODUCTO
+    * 4) el metodo de consulta allProductos va a regresar todos los productos ACTIVOS O NO
+    * 5) LAS CONSULTAS REGULARES SOLO SE EFECTUARAN POR EL METODO findByActivoContaining EL CULA SOLO VA A TRAER LOS PRODUCTOS ACTIVOS.
+    * */
+
+
+    @Override
+    public boolean saveProducto(Producto producto) {
+        logger.info("Save Proyect");
+        try {
+            productorepository.save(producto);
+            return true;
+        } catch (DataAccessException e) {
+            logger.error(" ERROR : " + e);
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+
     @Override
     public List<Producto> search(String search) {  return productorepository.finBySearch(search); }
 
@@ -91,12 +110,21 @@ public class ProductoServiceImplement implements ProductoService {
         return listaProducto;
     }
 
+    @Override
+    public List<Producto> findByActivoContaining(Boolean activo) {
+        logger.info("Get allProyect");
+        List<Producto> listaProducto = new ArrayList<Producto>();
+        listaProducto = productorepository.findByActivoContaining(activo);
+        return listaProducto;
+    }
 
     @Override
     public boolean save(ProductoIngreso productoIngreso) {
         boolean exito = false;
         Producto producto =  productoMapper.PojoToEntity(productoValidationService.valida(productoIngreso.getProducto()));
         if(this.saveProductos(producto, productoIngreso)){
+//            exito = !productoIngreso.getSalida()?  this.entradaProducto(productoIngreso, producto) : this.salidaProducto(productoIngreso, producto);
+
             if(!productoIngreso.getSalida()){
                 exito =  this.entradaProducto(productoIngreso, producto);
             }else{
@@ -162,9 +190,7 @@ public class ProductoServiceImplement implements ProductoService {
             e.printStackTrace();
             return false;
         }
-
-
-        return false;
+        return exito;
     }
 
 
@@ -347,13 +373,7 @@ public class ProductoServiceImplement implements ProductoService {
         return listaProducto;
     }
 
-    @Override
-    public List<Producto> findByActivoContaining(Boolean activo) {
-        logger.info("Get allProyect");
-        List<Producto> listaProducto = new ArrayList<Producto>();
-        listaProducto = productorepository.findByActivoContaining(activo);
-        return listaProducto;
-    }
+
 
     @Override
     public List<Producto> findByFechaIngresoContaining(Date fechaingreso) {
@@ -388,18 +408,6 @@ public class ProductoServiceImplement implements ProductoService {
 
     }
 
-    @Override
-    public boolean saveProducto(Producto producto) {
-        logger.info("Save Proyect");
-        try {
-            productorepository.save(producto);
-            return true;
-        } catch (DataAccessException e) {
-            logger.error(" ERROR : " + e);
-            e.printStackTrace();
-            return false;
-        }
-    }
 
 
 

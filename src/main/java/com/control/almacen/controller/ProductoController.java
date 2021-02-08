@@ -62,17 +62,35 @@ public class ProductoController {
     private AlmacenajeAreaMapper areaalmacenajesystemMapper;
 
 
+
     @PostMapping("/save")
     private Boolean saveProducto(@RequestBody ProductoIngreso productoIngresoList) {
        //  return productoService.saveProducto(productoMapper.PojoToEntity(productoValidationService.valida(productoIngresoList.getProducto())));
         return productoService.save(productoIngresoList);
     }
 
+
+    @GetMapping("/GetProductos")
+    private ResponseEntity<EntityRespone> findByActivoContain() {
+        Boolean busca = (Boolean) productoValidationService.validation(true);
+        EntityRespone entityRespone = mapperEntityRespone.setEntityT(productoService.findByActivoContaining(busca));
+        return new ResponseEntity<EntityRespone>(entityRespone, HttpStatus.OK);
+    }
+
+
     @GetMapping("/GetAllProducto")
     private ResponseEntity<EntityRespone> getAllProducto() {
         EntityRespone entityRespone = mapperEntityRespone.setEntityT(productoService.getAllProducto());
         return new ResponseEntity<EntityRespone>(entityRespone, HttpStatus.OK);
     }
+
+
+    @RequestMapping(value="/Search", method=RequestMethod.GET)
+    public List<Producto> SearchRequest(@RequestParam(name="search") String search) {
+    return productoService.search((String) productoValidationService.validation(search));
+    }
+
+
 
 //
 //    @GetMapping("/Getcodigo/{codigo}")
@@ -254,9 +272,7 @@ public class ProductoController {
 //        return new ResponseEntity<EntityRespone>(entityRespone, HttpStatus.OK);
 //    }
 //
-//
-//
-//
+
 //
 //    @PostMapping("/save")
 //    private Boolean saveProducto(@RequestBody ProductoPojo producto) {
@@ -283,10 +299,7 @@ public class ProductoController {
 //    }
 //
 //
-//    @RequestMapping(value="/Search", method=RequestMethod.GET)
-//    public List<Producto>  SearchRequest(@RequestParam(name="search") String search) {
-//    return productoService.search((String) productoValidationService.validation(search));
-//    }
+
 //
 
 

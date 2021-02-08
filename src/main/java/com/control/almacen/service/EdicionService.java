@@ -20,27 +20,32 @@ import java.util.ArrayList;
 import java.util.List;
 import com.control.almacen.entitys.Edicion;import com.control.almacen.entitys.User;
 import com.control.almacen.entitys.Producto;
-
+import org.springframework.data.repository.query.Param;
 
 
 public interface EdicionService{
- 
-		public Edicion  findByFechaEdicion(Date fechaEdicion);
 
-		public Edicion  findByNotas(String notas);
+
+		public boolean save(Edicion edicion);
+		public Edicion findById(Long id);
+	    public List<Edicion> getAllEdicion();
 
 		public List<Edicion>  findByFechaEdicionContaining(Date fechaEdicion);
-
-		public List<Edicion>  findByNotasContaining(String notas);
-
-		public Edicion findById(Long id);
-		public boolean saveEdicion(Edicion edicion);
-		public List<Edicion> getAllEdicion();
-		public boolean updateEdicion(Edicion edicion);
- 		public boolean saveOrUpdateEdicion(Edicion edicion);
-
 		public List<Edicion>  findByRelacionUser(User user);
 		public List<Edicion>  findByRelacionProducto(Producto producto);
+
+        public List<Edicion> finBySearch(String keyword);
+        public List<Edicion> getAllBetweenDates(Date startDate, Date endDate);
+
+
+
+//		public boolean saveEdicion(Edicion edicion);
+//		public boolean updateEdicion(Edicion edicion);
+//		public boolean saveOrUpdateEdicion(Edicion edicion);
+//		public Edicion  findByNotas(String notas);
+//		public List<Edicion>  findByNotasContaining(String notas);
+//		public Edicion  findByFechaEdicion(Date fechaEdicion);
+
 }
  /*
  Copyright (C) 2008 Google Inc.

@@ -15,6 +15,8 @@ Create on Sat Jan 30 15:24:11 ART 2021
 package com.control.almacen.controller;
 
 
+import com.control.almacen.entitys.Edicion;
+import com.control.almacen.entitys.Producto;
 import com.control.almacen.validation.EdicionValidation;
 import com.control.almacen.mapper.EdicionMapper;
 import com.control.almacen.service.EdicionService;
@@ -25,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
@@ -70,50 +73,23 @@ public class EdicionController {
     ProductoMapper productoMapper;
 
 
-    @GetMapping("/Getfechaedicion/{fechaedicion}")
-    private ResponseEntity<EntityRespone> findByFechaEdicion(@PathVariable("fechaedicion") Date fechaedicion) {
-        Date busca = (Date) edicionValidationService.validation(fechaedicion);
-        try {
-            EntityRespone entityRespone = mapperEntityRespone.setEntityTobj(edicionService.findByFechaEdicion(busca));
-            return new ResponseEntity<EntityRespone>(entityRespone, HttpStatus.OK);
-        } catch (DataAccessException e) {
-            EntityRespone entityRespone = mapperEntityRespone.setEntityResponT(null, "Ocurrio un error", e.getMessage());
-            return new ResponseEntity<EntityRespone>(entityRespone, HttpStatus.BAD_REQUEST);
-        }
-    }
 
-    @GetMapping("/Getnotas/{notas}")
-    private ResponseEntity<EntityRespone> findByNotas(@PathVariable("notas") String notas) {
-        String busca = (String) edicionValidationService.validation(notas);
-        try {
-            EntityRespone entityRespone = mapperEntityRespone.setEntityTobj(edicionService.findByNotas(busca));
-            return new ResponseEntity<EntityRespone>(entityRespone, HttpStatus.OK);
-        } catch (DataAccessException e) {
-            EntityRespone entityRespone = mapperEntityRespone.setEntityResponT(null, "Ocurrio un error", e.getMessage());
-            return new ResponseEntity<EntityRespone>(entityRespone, HttpStatus.BAD_REQUEST);
-        }
+
+    @PostMapping("/save")
+    private Boolean saveEdicion(@RequestBody EdicionPojo edicion) {
+        return edicionService.save(edicionMapper.PojoToEntity(edicionValidationService.valida(edicion)));
     }
 
 
-    @GetMapping("/Getfechaedicioncontain/{fechaedicion}")
-    private ResponseEntity<EntityRespone> findByFechaEdicionContain(@PathVariable("fechaedicion") Date fechaedicion) {
-        Date busca = (Date) edicionValidationService.validation(fechaedicion);
-        EntityRespone entityRespone = mapperEntityRespone.setEntityT(edicionService.findByFechaEdicionContaining(busca));
-        return new ResponseEntity<EntityRespone>(entityRespone, HttpStatus.OK);
-    }
-
-    @GetMapping("/Getnotascontain/{notas}")
-    private ResponseEntity<EntityRespone> findByNotasContain(@PathVariable("notas") String notas) {
-        String busca = (String) edicionValidationService.validation(notas);
-        EntityRespone entityRespone = mapperEntityRespone.setEntityT(edicionService.findByNotasContaining(busca));
-        return new ResponseEntity<EntityRespone>(entityRespone, HttpStatus.OK);
+    @RequestMapping(value="/Search", method=RequestMethod.GET)
+    public List<Edicion> SearchRequest(@RequestParam(name="search") String search) {
+        return edicionService.finBySearch((String) productoValidationService.validation(search));
     }
 
 
-    @GetMapping("/GetEdicion/{id}")
-    private ResponseEntity<EntityRespone> findById(@PathVariable("id") String id) {
-        EntityRespone entityRespone = mapperEntityRespone.setEntityTobj(edicionService.findById(edicionValidationService.valida_id(id)));
-        return new ResponseEntity<EntityRespone>(entityRespone, HttpStatus.OK);
+    @RequestMapping(value="/BetweenDates", method=RequestMethod.GET)
+    public List<Edicion> getAllBetweenDates(@RequestParam(name="startDate") Date startDate, @RequestParam(name="endDate") Date endDate) {
+        return edicionService.getAllBetweenDates((Date) productoValidationService.validation(startDate) , (Date) productoValidationService.validation(endDate));
     }
 
 
@@ -124,22 +100,11 @@ public class EdicionController {
     }
 
 
-    @PostMapping("/save")
-    private Boolean saveEdicion(@RequestBody EdicionPojo edicion) {
-        return edicionService.saveEdicion(edicionMapper.PojoToEntity(edicionValidationService.valida(edicion)));
-    }
 
-
-    @PostMapping("/Update")
-    private Long UpdateEdicion(@RequestBody EdicionPojo edicion) {
-        edicionService.updateEdicion(edicionMapper.PojoToEntity(edicionValidationService.valida(edicion)));
-        return edicion.getId();
-    }
-
-
-    @PostMapping("/saveOrUpdate")
-    private boolean saveOrUpdateEdicion(@RequestBody EdicionPojo edicion) {
-        return edicionService.saveOrUpdateEdicion(edicionMapper.PojoToEntity(edicionValidationService.valida(edicion)));
+    @GetMapping("/GetEdicion/{id}")
+    private ResponseEntity<EntityRespone> findById(@PathVariable("id") String id) {
+        EntityRespone entityRespone = mapperEntityRespone.setEntityTobj(edicionService.findById(edicionValidationService.valida_id(id)));
+        return new ResponseEntity<EntityRespone>(entityRespone, HttpStatus.OK);
     }
 
 
@@ -154,6 +119,64 @@ public class EdicionController {
         EntityRespone entityRespone = mapperEntityRespone.setEntityT(edicionService.findByRelacionProducto(productoMapper.PojoToEntity(productoValidationService.valida(producto))));
         return new ResponseEntity<EntityRespone>(entityRespone, HttpStatus.OK);
     }
+
+
+
+
+//    @PostMapping("/Update")
+//    private Long UpdateEdicion(@RequestBody EdicionPojo edicion) {
+//        edicionService.updateEdicion(edicionMapper.PojoToEntity(edicionValidationService.valida(edicion)));
+//        return edicion.getId();
+//    }
+//
+//
+//    @PostMapping("/saveOrUpdate")
+//    private boolean saveOrUpdateEdicion(@RequestBody EdicionPojo edicion) {
+//        return edicionService.saveOrUpdateEdicion(edicionMapper.PojoToEntity(edicionValidationService.valida(edicion)));
+//    }
+//
+//
+//
+//    @GetMapping("/Getfechaedicion/{fechaedicion}")
+//    private ResponseEntity<EntityRespone> findByFechaEdicion(@PathVariable("fechaedicion") Date fechaedicion) {
+//        Date busca = (Date) edicionValidationService.validation(fechaedicion);
+//        try {
+//            EntityRespone entityRespone = mapperEntityRespone.setEntityTobj(edicionService.findByFechaEdicion(busca));
+//            return new ResponseEntity<EntityRespone>(entityRespone, HttpStatus.OK);
+//        } catch (DataAccessException e) {
+//            EntityRespone entityRespone = mapperEntityRespone.setEntityResponT(null, "Ocurrio un error", e.getMessage());
+//            return new ResponseEntity<EntityRespone>(entityRespone, HttpStatus.BAD_REQUEST);
+//        }
+//    }
+//
+//    @GetMapping("/Getnotas/{notas}")
+//    private ResponseEntity<EntityRespone> findByNotas(@PathVariable("notas") String notas) {
+//        String busca = (String) edicionValidationService.validation(notas);
+//        try {
+//            EntityRespone entityRespone = mapperEntityRespone.setEntityTobj(edicionService.findByNotas(busca));
+//            return new ResponseEntity<EntityRespone>(entityRespone, HttpStatus.OK);
+//        } catch (DataAccessException e) {
+//            EntityRespone entityRespone = mapperEntityRespone.setEntityResponT(null, "Ocurrio un error", e.getMessage());
+//            return new ResponseEntity<EntityRespone>(entityRespone, HttpStatus.BAD_REQUEST);
+//        }
+//    }
+//
+//
+//    @GetMapping("/Getfechaedicioncontain/{fechaedicion}")
+//    private ResponseEntity<EntityRespone> findByFechaEdicionContain(@PathVariable("fechaedicion") Date fechaedicion) {
+//        Date busca = (Date) edicionValidationService.validation(fechaedicion);
+//        EntityRespone entityRespone = mapperEntityRespone.setEntityT(edicionService.findByFechaEdicionContaining(busca));
+//        return new ResponseEntity<EntityRespone>(entityRespone, HttpStatus.OK);
+//    }
+//
+//    @GetMapping("/Getnotascontain/{notas}")
+//    private ResponseEntity<EntityRespone> findByNotasContain(@PathVariable("notas") String notas) {
+//        String busca = (String) edicionValidationService.validation(notas);
+//        EntityRespone entityRespone = mapperEntityRespone.setEntityT(edicionService.findByNotasContaining(busca));
+//        return new ResponseEntity<EntityRespone>(entityRespone, HttpStatus.OK);
+//    }
+//
+
 }
  /*
  Copyright (C) 2008 Google Inc.

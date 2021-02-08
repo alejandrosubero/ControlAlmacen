@@ -19,61 +19,44 @@ public class ReconsiliacionProductos implements Serializable {
     @Column(name = "id", updatable = true, nullable = false, length = 25)
     private Long id;
 
-
     @Column(name = "codigo", updatable = true, nullable = true, length = 200)
     private String codigo;
-
 
     @Column(name = "nombre", updatable = true, nullable = true, length = 200)
     private String nombre;
 
-
     @Column(name = "description", updatable = true, nullable = true, length = 3000)
     private String description;
-
 
     @Column(name = "cantidadInicial", updatable = true, nullable = true)
     private Long cantidadInicial;
 
-
     @Column(name = "catidadActual", updatable = true, nullable = true)
     private Long catidadActual;
-
 
     @Column(name = "notas", updatable = true, nullable = true, length = 4000)
     private String notas;
 
-
     @Column(name = "activo", updatable = true, nullable = true)
     private Boolean activo;
-
 
     @Column(name = "fechaIngreso", updatable = true, nullable = true)
     private Date fechaIngreso;
 
-
     @Column(name = "clasificacion", updatable = true, nullable = true, length = 500)
     private String clasificacion;
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = false)
-    private List<AlmacenajeArea> areaAlmacenajeSystem = new ArrayList<>();
-
 
     @Column(name = "fecha_Ultimo_Ingreso", updatable = true, nullable = true)
     private Date fechaUltimoIngreso;
 
-
     @Column(name = "ultima_Cantidad_Ingesada", updatable = true, nullable = true)
     private Long ultimaCantidadIngesada;
-
 
     @Column(name = "fecha_Ultima_Salida", updatable = true, nullable = true)
     private Date fechaUltimaSalida;
 
-
     @Column(name = "ultima_Cantidad_Salida", updatable = true, nullable = true)
     private Long ultimaCantidadSalida;
-
 
     @Column(name = "fecha", updatable = true, nullable = true, length = 200)
     private Date fecha;
@@ -83,8 +66,11 @@ public class ReconsiliacionProductos implements Serializable {
 
     @Column(name = "codigoUser", updatable = true, nullable = true, length = 200)
     private String encargado;
-
     public ReconsiliacionProductos() {}
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = false)
+    @JoinColumn(name = "id_ReconsiliacionProductos")
+    private List<AlmacenajeArea> areaAlmacenajeSystem = new ArrayList<>();
 
 
     public ReconsiliacionProductos(Producto producto, Entrada entrada) {
@@ -102,7 +88,12 @@ public class ReconsiliacionProductos implements Serializable {
         this.encargado = salida.getEncargado();
     }
 
-
+    public ReconsiliacionProductos(Producto producto, Date fecha, String ticket, String encargado) {
+        this.mapperProducto(producto);
+        this.fecha = fecha;
+        this.ticket = ticket;
+        this.encargado = encargado;
+    }
 
     public void mapperProducto (Producto producto) {
         this.codigo = producto.getCodigo();

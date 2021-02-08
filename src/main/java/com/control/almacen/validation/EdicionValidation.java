@@ -33,9 +33,8 @@ import com.control.almacen.pojo.ProductoPojo;
         EdicionPojo pojo = null;
         try {
              if (edicion != null) {
-              if (
-        edicion.getId() != null &&
-        edicion.getFechaedicion() != null &&
+              if ( edicion.getId() != null &&
+        edicion.getFechaEdicion() != null &&
         edicion.getNotas() != null        ) {
         pojo = edicion;
          }

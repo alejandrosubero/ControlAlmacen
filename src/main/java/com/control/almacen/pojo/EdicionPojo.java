@@ -13,16 +13,15 @@ Create on Sat Jan 30 15:23:00 ART 2021
 
 package com.control.almacen.pojo;
 
-import javax.persistence.*;
+
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 import java.util.Date;
 
-import com.control.almacen.pojo.UserPojo;
-import com.control.almacen.pojo.ProductoPojo;
+import com.control.almacen.entitys.Producto;
+import com.control.almacen.entitys.User;
+
 
 
 public class EdicionPojo implements Serializable {
@@ -30,17 +29,45 @@ public class EdicionPojo implements Serializable {
     private static final long serialVersionUID = -7452755048929886296L;
 
     private Long id;
-
     private Date fechaEdicion;
-
+    private boolean sacoproducto;
+    private boolean incrementoProducto;
+    private boolean editoNombre;
+    private boolean desactivoProducto;
+    private boolean modificoNota;
+    private boolean modificoFechas;
     private String notas;
+    private User user;
+    private Producto producto;
 
-    private UserPojo user;
-
-    private ProductoPojo producto;
 
     public EdicionPojo (){ }
 
+    public EdicionPojo( boolean sacoproducto, boolean incrementoProducto, boolean editoNombre, boolean desactivoProducto, boolean modificoNota, boolean modificoFechas, String notas, User user, Producto producto) {
+        this.fechaEdicion = new Date();
+        this.sacoproducto = sacoproducto;
+        this.incrementoProducto = incrementoProducto;
+        this.editoNombre = editoNombre;
+        this.desactivoProducto = desactivoProducto;
+        this.modificoNota = modificoNota;
+        this.modificoFechas = modificoFechas;
+        this.notas = notas;
+        this.user = user;
+        this.producto = producto;
+    }
+
+    /*
+     * ACCIONES QUE ENTRAN POR EDICION DE PRODUCTO:
+     * Regas logicas de la edicion:
+     *
+     * 1) si se desacyiva el producto hay que hacer una reconciliacion y modificar el producto
+     * 2) si saco o itrodusco productos del inventario hay que hacer la reconsiliacion de productos, una entrada o salida segun sea el caso, y modificar el producto. Y EN NOTA QUE FUE POR EDICION DE PRODUCTO
+     * 3) si se edita el nombre hay que hacer una reconsiliacion y modificar el producto.
+     * 4) si se modifican fechas del producto hay que hacer una reconciliacion y modificar el producto.
+     * 5) si se modifica las notas del producto solo se guarda la edicion y se modifica el producto.
+     *
+     *
+     * */
 
     public Long getId() {
         return id;
@@ -50,12 +77,60 @@ public class EdicionPojo implements Serializable {
         this.id = id;
     }
 
-    public Date getFechaedicion() {
+    public Date getFechaEdicion() {
         return fechaEdicion;
     }
 
-    public void setFechaedicion(Date fechaEdicion) {
+    public void setFechaEdicion(Date fechaEdicion) {
         this.fechaEdicion = fechaEdicion;
+    }
+
+    public boolean isSacoproducto() {
+        return sacoproducto;
+    }
+
+    public void setSacoproducto(boolean sacoproducto) {
+        this.sacoproducto = sacoproducto;
+    }
+
+    public boolean isIncrementoProducto() {
+        return incrementoProducto;
+    }
+
+    public void setIncrementoProducto(boolean incrementoProducto) {
+        this.incrementoProducto = incrementoProducto;
+    }
+
+    public boolean isEditoNombre() {
+        return editoNombre;
+    }
+
+    public void setEditoNombre(boolean editoNombre) {
+        this.editoNombre = editoNombre;
+    }
+
+    public boolean isDesactivoProducto() {
+        return desactivoProducto;
+    }
+
+    public void setDesactivoProducto(boolean desactivoProducto) {
+        this.desactivoProducto = desactivoProducto;
+    }
+
+    public boolean isModificoNota() {
+        return modificoNota;
+    }
+
+    public void setModificoNota(boolean modificoNota) {
+        this.modificoNota = modificoNota;
+    }
+
+    public boolean isModificoFechas() {
+        return modificoFechas;
+    }
+
+    public void setModificoFechas(boolean modificoFechas) {
+        this.modificoFechas = modificoFechas;
     }
 
     public String getNotas() {
@@ -66,31 +141,51 @@ public class EdicionPojo implements Serializable {
         this.notas = notas;
     }
 
-    public UserPojo getuser() {
+    public User getUser() {
         return user;
     }
 
-    public void setuser(UserPojo user) {
+    public void setUser(User user) {
         this.user = user;
     }
 
-    public ProductoPojo getproducto() {
+    public Producto getProducto() {
         return producto;
     }
 
-    public void setproducto(ProductoPojo producto) {
+    public void setProducto(Producto producto) {
         this.producto = producto;
     }
 
 
-    public boolean equalsEdicionPojo(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        EdicionPojo edicionpojo = (EdicionPojo) o;
-        return Objects.equals(id, edicionpojo.id) ||
-                Objects.equals(fechaEdicion, edicionpojo.fechaEdicion) ||
-                Objects.equals(notas, edicionpojo.notas);
+        EdicionPojo that = (EdicionPojo) o;
+        return sacoproducto == that.sacoproducto && incrementoProducto == that.incrementoProducto && editoNombre == that.editoNombre && desactivoProducto == that.desactivoProducto && modificoNota == that.modificoNota && modificoFechas == that.modificoFechas && Objects.equals(id, that.id) && Objects.equals(fechaEdicion, that.fechaEdicion) && Objects.equals(notas, that.notas) && Objects.equals(user, that.user) && Objects.equals(producto, that.producto);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, fechaEdicion, sacoproducto, incrementoProducto, editoNombre, desactivoProducto, modificoNota, modificoFechas, notas, user, producto);
+    }
+
+    @Override
+    public String toString() {
+        return "EdicionPojo{" +
+                "id=" + id +
+                ", fechaEdicion=" + fechaEdicion +
+                ", sacoproducto=" + sacoproducto +
+                ", incrementoProducto=" + incrementoProducto +
+                ", editoNombre=" + editoNombre +
+                ", desactivoProducto=" + desactivoProducto +
+                ", modificoNota=" + modificoNota +
+                ", modificoFechas=" + modificoFechas +
+                ", notas='" + notas + '\'' +
+                ", user=" + user +
+                ", producto=" + producto +
+                '}';
     }
 }
  /*

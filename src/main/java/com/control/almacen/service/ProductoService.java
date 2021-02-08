@@ -28,18 +28,18 @@ public interface ProductoService{
 
 		public Producto findById(Long id);
 		public boolean save(ProductoIngreso productoIngresoList);
-		public Producto  findByCodigo(String codigo);
 
+		public List<Producto>  findByActivoContaining(Boolean activo);
+		public List<Producto> getAllProducto();
+		public List<Producto> search( String search);
+
+		public Producto  findByCodigo(String codigo);
 		public Producto  findByNombre(String nombre);
 
-
-		public List<Producto> getAllProducto();
+		public List<Producto>  findByNombreContaining(String nombre);
 		public List<Producto>  findByCodigoContaining(String codigo);
 
-		public List<Producto>  findByNombreContaining(String nombre);
-		public List<Producto>  findByActivoContaining(Boolean activo);
 
-		public List<Producto> search( String search);
 		public List<Producto>  findByDescriptionContaining(String description);
 		public List<Producto>  findByCantidadInicialContaining(Long cantidadInicial);
 		public List<Producto>  findByCatidadActualContaining(Long catidadActual);
@@ -61,12 +61,6 @@ public interface ProductoService{
 	//	public Producto  findByCatidadActual(Long catidadActual);
 		//	public Producto  findByNotas(String notas);
 		//	public Producto  findByActivo(Boolean activo);
-
-
-
-
-
-
 
 
 }

@@ -45,12 +45,15 @@ public class Inventario implements Serializable {
     private Date fechaInventario;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = false)
+    @JoinColumn(name = "id_Inventario")
     private List<Producto> productos = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = false)
+    @JoinColumn(name = "id_InventarioEntrada")
     private List<Entrada> entrada = new ArrayList<>();
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = false)
+    @JoinColumn(name = "id_InventarioSalida")
     private List<SalidaProducto> salidas = new ArrayList<>();
 
 

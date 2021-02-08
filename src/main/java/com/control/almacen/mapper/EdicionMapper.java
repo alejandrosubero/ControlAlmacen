@@ -21,7 +21,7 @@ import com.control.almacen.entitys.User;
 import com.control.almacen.pojo.UserPojo;
 import com.control.almacen.entitys.Producto;
 import com.control.almacen.pojo.ProductoPojo;
-import org.springframework.web.bind.annotation.*;
+
 import org.springframework.stereotype.Component;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -38,29 +38,61 @@ public class EdicionMapper {
     @Autowired
     private ProductoMapper productomapper;
 
+    private Long id;
+    private Date fechaEdicion;
+    private boolean sacoproducto;
+    private boolean incrementoProducto;
+    private boolean editoNombre;
+    private boolean desactivoProducto;
+    private boolean modificoNota;
+    private boolean modificoFechas;
+    private String notas;
+    private User user;
+    private Producto producto;
+
+
+
+
     public Edicion PojoToEntity(EdicionPojo pojo) {
-        Edicion entity = new Edicion();
-        entity.setId(pojo.getId());
-        entity.setFechaedicion(pojo.getFechaedicion());
-        entity.setNotas(pojo.getNotas());
         List<User> listuser = new ArrayList<User>();
         List<Producto> listproducto = new ArrayList<Producto>();
-        entity.setuser(usermapper.PojoToEntity(pojo.getuser()));
-        entity.setproducto(productomapper.PojoToEntity(pojo.getproducto()));
+
+        Edicion entity = new Edicion();
+
+        entity.setId(pojo.getId());
+        entity.setFechaEdicion(pojo.getFechaEdicion());
+        entity.setSacoproducto(pojo.isSacoproducto());
+        entity.setDesactivoProducto(pojo.isDesactivoProducto());
+        entity.setEditoNombre(pojo.isEditoNombre());
+        entity.setNotas(pojo.getNotas());
+        entity.setIncrementoProducto(pojo.isIncrementoProducto());
+        entity.setModificoNota(pojo.isModificoNota());
+        entity.setModificoFechas(pojo.isModificoFechas());
+        entity.setProducto(pojo.getProducto());
+        entity.setUser(pojo.getUser());
+
         return entity;
     }
 
 
     public EdicionPojo entityToPojo(Edicion entity) {
-        EdicionPojo pojo = new EdicionPojo();
         List<UserPojo> listuser = new ArrayList<UserPojo>();
         List<ProductoPojo> listproducto = new ArrayList<ProductoPojo>();
-        pojo.setId(entity.getId());
-        pojo.setFechaedicion(entity.getFechaedicion());
-        pojo.setNotas(entity.getNotas());
 
-        pojo.setuser(usermapper.entityToPojo(entity.getuser()));
-        pojo.setproducto(productomapper.entityToPojo(entity.getproducto()));
+        EdicionPojo pojo = new EdicionPojo();
+
+        pojo.setId(entity.getId());
+        pojo.setFechaEdicion(entity.getFechaEdicion());
+        pojo.setSacoproducto(entity.isSacoproducto());
+        pojo.setDesactivoProducto(entity.isDesactivoProducto());
+        pojo.setEditoNombre(entity.isEditoNombre());
+        pojo.setNotas(entity.getNotas());
+        pojo.setIncrementoProducto(entity.isIncrementoProducto());
+        pojo.setModificoNota(entity.isModificoNota());
+        pojo.setModificoFechas(entity.isModificoFechas());
+        pojo.setProducto(entity.getProducto());
+        pojo.setUser(entity.getUser());
+
         return pojo;
     }
 

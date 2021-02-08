@@ -37,13 +37,6 @@ public class ProductAudit implements Serializable {
     @Column(name = "id", updatable = true, nullable = false, length = 200)
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Producto productoSystem;
-
-
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = false)
-    private List<AlmacenajeArea> areaAlmacenajeAuditoria = new ArrayList<>();
-
 
     @Column(name = "cantidadDiferencia", updatable = true, nullable = true, length = 200)
     private Long cantidadDiferencia;
@@ -61,6 +54,14 @@ public class ProductAudit implements Serializable {
     private Date fechaAuditado;
 
 
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_ProductAuditProduct")
+    private Producto productoSystem;
+
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = false)
+    @JoinColumn(name = "id_ProductAudit")
+    private List<AlmacenajeArea> areaAlmacenajeAuditoria = new ArrayList<>();
 
 
     public ProductAudit() { }

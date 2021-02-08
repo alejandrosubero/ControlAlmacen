@@ -70,8 +70,8 @@ public class SalidaProducto implements Serializable {
     @Column(name = "nota", updatable = true, nullable = true, length = 200)
     private String nota;
 
-
     @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "id_SalidaProducto")
     private Cliente cliente;
 
 
@@ -79,6 +79,18 @@ public class SalidaProducto implements Serializable {
     public SalidaProducto() {
     }
 
+    public SalidaProducto(String ticket, String encargado, String nota, Producto producto, Cliente cliente) {
+        this.fechadesalida = producto.getFechaUltimaSalida();
+        this.cantidadSalida = producto.getUltimaCantidadSalida();
+        this.idProductoEnBase = producto.getId();
+        this.codigoProducto = producto.getCodigo();
+        this.nombreProducto = producto.getNombre();
+        this.catidadActual = producto.getCatidadActual();
+        this.ticket = ticket;
+        this.encargado = encargado;
+        this.nota = nota;
+        this.cliente = cliente;
+    }
 
     public static long getSerialVersionUID() {
         return serialVersionUID;

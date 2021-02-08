@@ -74,6 +74,18 @@ public class Entrada implements Serializable {
     public Entrada() {
     }
 
+    public Entrada( String ticket, String encargado, String nota, Producto producto) {
+        this.cantidadIngresada = producto.getUltimaCantidadIngesada();
+        this.fechaIngreso = producto.getFechaUltimoIngreso();
+        this.idProductoEnBase = producto.getId();
+        this.codigoProducto = producto.getCodigo();
+        this.nombreProducto = producto.getNombre();
+        this.catidadActual = producto.getCatidadActual();
+        this.ticket = ticket;
+        this.encargado = encargado;
+        this.nota = nota;
+    }
+
     public static long getSerialVersionUID() {
         return serialVersionUID;
     }
